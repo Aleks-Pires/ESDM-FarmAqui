@@ -83,3 +83,7 @@ feat/autenticacao-solid
 ```
 
 A Pull Request deve ter como destino a branch `main`.
+
+## Validação automática
+
+O repositório inclui um workflow do GitHub Actions que, a cada push/PR, gera o scaffold Android, executa `flutter analyze`, roda os testes e tenta compilar um APK de debug. Isso ajuda a detectar problemas de integração assim que o projeto for publicado.
