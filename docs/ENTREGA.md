@@ -1,5 +1,10 @@
 # Checklist de entrega
 
+## Integrantes
+
+- **Aleksander Pires Calixto Negrão**
+- **Jorge Lucas Firmino Silva de Sá**
+
 O código já está preparado em duas branches Git:
 
 - `main`: estrutura inicial.

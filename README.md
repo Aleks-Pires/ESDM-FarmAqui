@@ -2,6 +2,11 @@
 
 Aplicativo Android desenvolvido em Flutter para a disciplina **Engenharia de Software para Dispositivos Móveis**.
 
+## Integrantes
+
+- **Aleksander Pires Calixto Negrão**
+- **Jorge Lucas Firmino Silva de Sá**
+
 ## Proposta
 
 O **FarmaAqui** tem como objetivo facilitar o acesso a medicamentos ao permitir que, futuramente, usuários consultem a disponibilidade em farmácias antes de se deslocarem. A motivação é especialmente relevante para pacientes e cuidadores de cidades pequenas, que podem precisar percorrer grandes distâncias para localizar determinados medicamentos.
