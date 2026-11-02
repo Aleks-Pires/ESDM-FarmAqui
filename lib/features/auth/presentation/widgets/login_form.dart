@@ -12,6 +12,7 @@ final class LoginForm extends StatelessWidget {
     required this.onTogglePassword,
     required this.onLoginEmail,
     required this.onLoginGoogle,
+    required this.onCreateAccount,
     super.key,
   });
 
@@ -23,6 +24,7 @@ final class LoginForm extends StatelessWidget {
   final VoidCallback onTogglePassword;
   final Future<void> Function() onLoginEmail;
   final Future<void> Function() onLoginGoogle;
+  final VoidCallback onCreateAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +96,12 @@ final class LoginForm extends StatelessWidget {
                             child: Text('Entrar com Google'),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 12),
+                        TextButton(
+                          onPressed: controller.loading ? null : onCreateAccount,
+                          child: const Text('Criar conta'),
+                        ),
+                        const SizedBox(height: 12),
                         const _DemoNotice(),
                       ],
                     ),
