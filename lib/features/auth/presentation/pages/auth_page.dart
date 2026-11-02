@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../profile/presentation/pages/registration_page.dart';
 import '../../domain/contracts/auth_strategy.dart';
 import '../controllers/auth_controller.dart';
 import '../widgets/authenticated_view.dart';
@@ -67,6 +68,12 @@ final class _AuthPageState extends State<AuthPage> {
     await widget.controller.loginWith(widget.googleStrategyFactory());
   }
 
+  void _openRegistration() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const RegistrationPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -87,6 +94,7 @@ final class _AuthPageState extends State<AuthPage> {
           },
           onLoginEmail: _loginWithEmail,
           onLoginGoogle: _loginWithGoogle,
+          onCreateAccount: _openRegistration,
         );
       },
     );
