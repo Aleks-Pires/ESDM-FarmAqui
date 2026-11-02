@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feat/autenticacao-solid
+      - feat/telas-farmaaqui
   pull_request:
     branches:
       - main
