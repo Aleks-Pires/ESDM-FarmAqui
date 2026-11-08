@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../profile/presentation/pages/profile_page.dart';
 import 'results_page.dart';
 
 final class HomePage extends StatefulWidget {
@@ -138,12 +139,24 @@ final class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      bottomNavigationBar: const NavigationBar(
+      bottomNavigationBar: NavigationBar(
         selectedIndex: 0,
+        onDestinationSelected: (index) {
+          if (index == 2) {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const ProfilePage(),
+              ),
+            );
+          }
+        },
         destinations: [
-          NavigationDestination(icon: Icon(Icons.home_rounded), label: 'Início'),
-          NavigationDestination(icon: Icon(Icons.history_rounded), label: 'Histórico'),
-          NavigationDestination(icon: Icon(Icons.person_outline_rounded), label: 'Perfil'),
+          NavigationDestination(
+              icon: Icon(Icons.home_rounded), label: 'Início'),
+          NavigationDestination(
+              icon: Icon(Icons.history_rounded), label: 'Histórico'),
+          NavigationDestination(
+              icon: Icon(Icons.person_outline_rounded), label: 'Perfil'),
         ],
       ),
     );
