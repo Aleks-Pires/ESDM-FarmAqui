@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/services/medication_service.dart';
+import 'delivery_address_page.dart';
 
 final class ReservationPage extends StatefulWidget {
   const ReservationPage({
@@ -31,6 +32,7 @@ final class _ReservationPageState extends State<ReservationPage> {
   bool delivery = false;
   bool prescriptionAttached = false;
   bool confirming = false;
+  String? deliveryAddress;
   String payment = 'Cartão de crédito';
 
   double get unitPrice {
@@ -48,6 +50,15 @@ final class _ReservationPageState extends State<ReservationPage> {
   }
 
   Future<void> confirm() async {
+    if (delivery && (deliveryAddress == null || deliveryAddress!.trim().isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Informe o endereço para solicitar delivery.'),
+        ),
+      );
+      return;
+    }
+
     if (widget.prescriptionRequired && !prescriptionAttached) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -105,7 +116,7 @@ final class _ReservationPageState extends State<ReservationPage> {
   @override
   Widget build(BuildContext context) {
     final subtotal = unitPrice * quantity;
-    final deliveryFee = delivery ? 5.90 : 0.0;
+    final deliveryFee = delivery ? 6.90 : 0.0;
     final total = subtotal + deliveryFee;
 
     return Scaffold(
@@ -254,15 +265,54 @@ final class _ReservationPageState extends State<ReservationPage> {
                   subtitle: widget.deliveryAvailable
                       ? 'Previsão: 45 min'
                       : 'Indisponível',
-                  onTap: () {
-                    if (widget.deliveryAvailable) {
-                      setState(() => delivery = true);
-                    }
+                  onTap: () async {
+                    if (!widget.deliveryAvailable) return;
+
+                    final address = await Navigator.of(context).push<String>(
+                      MaterialPageRoute(
+                        builder: (_) => const DeliveryAddressPage(),
+                      ),
+                    );
+
+                    if (address == null || !mounted) return;
+
+                    setState(() {
+                      delivery = true;
+                      deliveryAddress = address;
+                    });
                   },
                 ),
               ),
             ],
           ),
+          if (delivery && deliveryAddress != null) ...[
+            const SizedBox(height: 16),
+            Card(
+              elevation: 0,
+              color: const Color(0xFFEAF8F3),
+              child: ListTile(
+                leading: const Icon(Icons.home_pin_rounded),
+                title: const Text(
+                  'Endereço de entrega',
+                  style: TextStyle(fontWeight: FontWeight.w800),
+                ),
+                subtitle: Text(deliveryAddress!),
+                trailing: TextButton(
+                  onPressed: () async {
+                    final address = await Navigator.of(context).push<String>(
+                      MaterialPageRoute(
+                        builder: (_) => const DeliveryAddressPage(),
+                      ),
+                    );
+                    if (address != null && mounted) {
+                      setState(() => deliveryAddress = address);
+                    }
+                  },
+                  child: const Text('Alterar'),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 22),
           const Text(
             'Forma de pagamento',
