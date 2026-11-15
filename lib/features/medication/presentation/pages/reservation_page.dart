@@ -51,6 +51,13 @@ final class _ReservationPageState extends State<ReservationPage> {
     return 'R\$ ${value.toStringAsFixed(2).replaceAll('.', ',')}';
   }
 
+  String generateOrderNumber() {
+    final now = DateTime.now();
+    String two(int value) => value.toString().padLeft(2, '0');
+    final suffix = (now.millisecond % 10000).toString().padLeft(4, '0');
+    return 'FA-${now.year}${two(now.month)}${two(now.day)}-$suffix';
+  }
+
   Future<void> confirm() async {
     if (delivery && (deliveryAddress == null || deliveryAddress!.trim().isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -89,6 +96,8 @@ final class _ReservationPageState extends State<ReservationPage> {
       final deliveryFee = delivery ? 6.90 : 0.0;
       final total = subtotal + deliveryFee;
 
+      final orderNumber = generateOrderNumber();
+
       DemoAppState.instance.addHistory(
         HistoryEntry(
           medicine: widget.medicine,
@@ -97,6 +106,7 @@ final class _ReservationPageState extends State<ReservationPage> {
           status: delivery ? 'Pedido confirmado' : 'Reserva confirmada',
           dateLabel: 'Agora',
           totalLabel: brl(total),
+          orderNumber: orderNumber,
         ),
       );
 
@@ -110,9 +120,11 @@ final class _ReservationPageState extends State<ReservationPage> {
           ),
           title: Text(delivery ? 'Pedido confirmado' : 'Reserva confirmada'),
           content: Text(
-            delivery
-                ? 'Pagamento simulado aprovado. Previsão de entrega: aproximadamente 45 minutos.'
-                : 'Pagamento simulado aprovado. Medicamento reservado para retirada hoje.',
+            (delivery
+                    ? 'Pagamento simulado aprovado. Previsão de entrega: aproximadamente 45 minutos.'
+                    : 'Pagamento simulado aprovado. Medicamento reservado para retirada hoje.') +
+                '\n\nNúmero do pedido: ' +
+                orderNumber,
           ),
           actions: [
             FilledButton(
@@ -193,6 +205,12 @@ final class _ReservationPageState extends State<ReservationPage> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Quantidade de unidades',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
