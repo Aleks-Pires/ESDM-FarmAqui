@@ -34,6 +34,7 @@ final class DemoAppState extends ChangeNotifier {
       status: 'Entregue',
       dateLabel: 'Hoje, 14:20',
       totalLabel: 'R$ 25,80',
+      orderNumber: 'FA-20261115-1420',
     ),
     const HistoryEntry(
       medicine: 'Dipirona 500 mg',
@@ -42,6 +43,7 @@ final class DemoAppState extends ChangeNotifier {
       status: 'Concluída',
       dateLabel: '12/11/2026, 10:05',
       totalLabel: 'R$ 8,90',
+      orderNumber: 'FA-20261112-1005',
     ),
   ];
 
