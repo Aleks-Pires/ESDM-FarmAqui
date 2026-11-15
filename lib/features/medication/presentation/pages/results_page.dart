@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/demo_app_state.dart';
-
+import '../../../../core/medication_catalog.dart';
 import '../../data/models/medication_offer.dart';
 import '../../data/services/medication_service.dart';
+import 'medication_details_page.dart';
 import 'pharmacy_map_page.dart';
 import 'reservation_page.dart';
 
@@ -24,7 +25,12 @@ final class ResultsPage extends StatefulWidget {
 final class _ResultsPageState extends State<ResultsPage> {
   final service = MedicationService();
   late Future<MedicationSearchResult> futureResult;
+
   String sortMode = 'price';
+  bool onlyDelivery = false;
+  bool onlyInStock = false;
+  bool onlyNoPrescription = false;
+  bool maxTwenty = false;
 
   @override
   void initState() {
@@ -41,6 +47,54 @@ final class _ResultsPageState extends State<ResultsPage> {
         medicine: widget.medicine,
         city: widget.city,
       );
+    });
+  }
+
+  double distanceValue(MedicationOffer offer) {
+    final normalized = offer.distance
+        .toLowerCase()
+        .replaceAll('km', '')
+        .replaceAll(',', '.')
+        .trim();
+    return double.tryParse(normalized) ?? 9999;
+  }
+
+  List<MedicationOffer> filteredOffers(MedicationSearchResult result) {
+    final offers = result.offers.where((offer) {
+      if (onlyDelivery && !offer.delivery) return false;
+      if (onlyInStock &&
+          offer.status.toLowerCase().contains('indispon')) {
+        return false;
+      }
+      if (onlyNoPrescription && offer.prescriptionRequired) return false;
+      if (maxTwenty && offer.price > 20) return false;
+      return true;
+    }).toList();
+
+    offers.sort((a, b) {
+      if (sortMode == 'distance') {
+        return distanceValue(a).compareTo(distanceValue(b));
+      }
+
+      if (sortMode == 'favorites') {
+        final af = DemoAppState.instance.isFavorite(a.pharmacy) ? 0 : 1;
+        final bf = DemoAppState.instance.isFavorite(b.pharmacy) ? 0 : 1;
+        final favoriteCompare = af.compareTo(bf);
+        if (favoriteCompare != 0) return favoriteCompare;
+      }
+
+      return a.price.compareTo(b.price);
+    });
+
+    return offers;
+  }
+
+  void clearFilters() {
+    setState(() {
+      onlyDelivery = false;
+      onlyInStock = false;
+      onlyNoPrescription = false;
+      maxTwenty = false;
     });
   }
 
@@ -74,134 +128,282 @@ final class _ResultsPageState extends State<ResultsPage> {
           }
 
           final result = snapshot.data!;
-          final offers = [...result.offers];
-
-          double distanceValue(MedicationOffer offer) {
-            final normalized = offer.distance
-                .toLowerCase()
-                .replaceAll('km', '')
-                .replaceAll(',', '.')
-                .trim();
-            return double.tryParse(normalized) ?? 9999;
-          }
-
-          offers.sort((a, b) {
-            if (sortMode == 'distance') {
-              return distanceValue(a).compareTo(distanceValue(b));
-            }
-            if (sortMode == 'favorites') {
-              final af = DemoAppState.instance.isFavorite(a.pharmacy) ? 0 : 1;
-              final bf = DemoAppState.instance.isFavorite(b.pharmacy) ? 0 : 1;
-              final favCompare = af.compareTo(bf);
-              if (favCompare != 0) return favCompare;
-            }
-            return a.price.compareTo(b.price);
-          });
 
           return AnimatedBuilder(
             animation: DemoAppState.instance,
-            builder: (context, _) => ListView(
-            padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
-            children: [
-              Card(
-                elevation: 0,
-                color: const Color(0xFFEAF8F3),
-                child: ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.medication_rounded,
-                      color: Color(0xFF0A966A),
+            builder: (context, _) {
+              final offers = filteredOffers(result);
+              final allPrices =
+                  result.offers.map((offer) => offer.price).toList()..sort();
+              final lowestPrice =
+                  allPrices.isEmpty ? 0.0 : allPrices.first;
+              final highestPrice =
+                  allPrices.isEmpty ? 0.0 : allPrices.last;
+              final possibleSaving = highestPrice - lowestPrice;
+
+              return ListView(
+                padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+                children: [
+                  Card(
+                    elevation: 0,
+                    color: const Color(0xFFEAF8F3),
+                    child: ListTile(
+                      leading: const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.medication_rounded,
+                          color: Color(0xFF0A966A),
+                        ),
+                      ),
+                      title: Text(
+                        result.medicine,
+                        style: const TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                      subtitle: Text(result.city),
+                      trailing: IconButton(
+                        tooltip: DemoAppState.instance
+                                .isMedicineFavorite(result.medicine)
+                            ? 'Remover medicamento dos favoritos'
+                            : 'Favoritar medicamento',
+                        onPressed: () => DemoAppState.instance
+                            .toggleMedicineFavorite(result.medicine),
+                        icon: Icon(
+                          DemoAppState.instance
+                                  .isMedicineFavorite(result.medicine)
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: DemoAppState.instance
+                                  .isMedicineFavorite(result.medicine)
+                              ? Colors.redAccent
+                              : null,
+                        ),
+                      ),
                     ),
                   ),
-                  title: Text(
-                    result.medicine,
-                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  const SizedBox(height: 12),
+                  _SourceBadge(source: result.source),
+                  const SizedBox(height: 14),
+                  if (result.offers.isNotEmpty)
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => MedicationDetailsPage(
+                              medicine: result.medicine,
+                              offers: result.offers,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.info_outline_rounded),
+                      label: const Text('Detalhes do medicamento'),
+                    ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Ordenar',
+                    style: TextStyle(fontWeight: FontWeight.w800),
                   ),
-                  subtitle: Text(result.city),
-                ),
-              ),
-              const SizedBox(height: 12),
-              _SourceBadge(source: result.source),
-              const SizedBox(height: 18),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('Menor preço'),
+                        selected: sortMode == 'price',
+                        onSelected: (_) =>
+                            setState(() => sortMode = 'price'),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Mais perto'),
+                        selected: sortMode == 'distance',
+                        onSelected: (_) =>
+                            setState(() => sortMode = 'distance'),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Favoritos primeiro'),
+                        selected: sortMode == 'favorites',
+                        onSelected: (_) =>
+                            setState(() => sortMode = 'favorites'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Filtrar',
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      FilterChip(
+                        label: const Text('Com delivery'),
+                        selected: onlyDelivery,
+                        onSelected: (value) =>
+                            setState(() => onlyDelivery = value),
+                      ),
+                      FilterChip(
+                        label: const Text('Em estoque'),
+                        selected: onlyInStock,
+                        onSelected: (value) =>
+                            setState(() => onlyInStock = value),
+                      ),
+                      FilterChip(
+                        label: const Text('Sem receita'),
+                        selected: onlyNoPrescription,
+                        onSelected: (value) =>
+                            setState(() => onlyNoPrescription = value),
+                      ),
+                      FilterChip(
+                        label: const Text('Até R\$ 20'),
+                        selected: maxTwenty,
+                        onSelected: (value) =>
+                            setState(() => maxTwenty = value),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
+                  if (result.offers.isNotEmpty) ...[
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PharmacyMapPage(
+                              medicine: result.medicine,
+                              city: result.city,
+                              offers: offers.isEmpty
+                                  ? result.offers
+                                  : offers,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.map_outlined),
+                      label: const Text('Ver farmácias no mapa'),
+                    ),
+                    const SizedBox(height: 14),
+                  ],
+                  Text(
+                    offers.isEmpty
+                        ? 'Nenhuma farmácia com estes critérios'
+                        : '${offers.length} farmácia(s) encontrada(s)',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  if (result.offers.isEmpty)
+                    _NoMedicationResult(
+                      medicine: widget.medicine,
+                      city: widget.city,
+                    )
+                  else if (offers.isEmpty)
+                    Card(
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Há ofertas para este medicamento, mas nenhuma '
+                              'passou pelos filtros selecionados.',
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 10),
+                            TextButton(
+                              onPressed: clearFilters,
+                              child: const Text('Limpar filtros'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    ...offers.map(
+                      (offer) => _OfferCard(
+                        offer: offer,
+                        medicine: result.medicine,
+                        city: result.city,
+                        isFavorite:
+                            DemoAppState.instance.isFavorite(offer.pharmacy),
+                        onFavorite: () => DemoAppState.instance
+                            .toggleFavorite(offer.pharmacy),
+                        saving: offer.price == lowestPrice
+                            ? possibleSaving
+                            : 0,
+                      ),
+                    ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+final class _NoMedicationResult extends StatelessWidget {
+  const _NoMedicationResult({
+    required this.medicine,
+    required this.city,
+  });
+
+  final String medicine;
+  final String city;
+
+  @override
+  Widget build(BuildContext context) {
+    final alternatives = alternativePresentations(medicine);
+
+    return Card(
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Não encontramos exatamente esta apresentação.',
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+            if (alternatives.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              const Text('Talvez você esteja procurando:'),
+              const SizedBox(height: 10),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: [
-                  ChoiceChip(
-                    label: const Text('Menor preço'),
-                    selected: sortMode == 'price',
-                    onSelected: (_) => setState(() => sortMode = 'price'),
-                  ),
-                  ChoiceChip(
-                    label: const Text('Mais perto'),
-                    selected: sortMode == 'distance',
-                    onSelected: (_) => setState(() => sortMode = 'distance'),
-                  ),
-                  ChoiceChip(
-                    label: const Text('Favoritos primeiro'),
-                    selected: sortMode == 'favorites',
-                    onSelected: (_) => setState(() => sortMode = 'favorites'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18),
-              if (offers.isNotEmpty) ...[
-                OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => PharmacyMapPage(
-                          medicine: result.medicine,
-                          city: result.city,
-                          offers: offers,
-                        ),
+                children: alternatives
+                    .map(
+                      (item) => ActionChip(
+                        label: Text(item),
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => ResultsPage(
+                                medicine: item,
+                                city: city,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.map_outlined),
-                  label: const Text('Ver farmácias no mapa'),
-                ),
-                const SizedBox(height: 14),
-              ],
-              Text(
-                offers.isEmpty
-                    ? 'Nenhuma farmácia encontrada'
-                    : '${offers.length} farmácia(s) encontrada(s)',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+                    )
+                    .toList(),
+              ),
+            ] else
+              const Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Text(
+                  'Tente pesquisar outro nome ou selecionar uma sugestão na busca.',
                 ),
               ),
-              const SizedBox(height: 10),
-              if (result.offers.isEmpty)
-                const Card(
-                  elevation: 0,
-                  child: Padding(
-                    padding: EdgeInsets.all(22),
-                    child: Text(
-                      'Não há ofertas simuladas para essa busca. '
-                      'Tente Losartana 50 mg, Dipirona 500 mg, '
-                      'Amoxicilina 500 mg ou Insulina.',
-                    ),
-                  ),
-                )
-              else
-                ...offers.map(
-                  (offer) => _OfferCard(
-                    offer: offer,
-                    medicine: result.medicine,
-                    city: result.city,
-                    isFavorite:
-                        DemoAppState.instance.isFavorite(offer.pharmacy),
-                    onFavorite: () =>
-                        DemoAppState.instance.toggleFavorite(offer.pharmacy),
-                  ),
-                ),
-            ],
-          ),
-        );
-        },
+          ],
+        ),
       ),
     );
   }
@@ -247,6 +449,7 @@ final class _OfferCard extends StatelessWidget {
     required this.city,
     required this.isFavorite,
     required this.onFavorite,
+    required this.saving,
   });
 
   final MedicationOffer offer;
@@ -254,6 +457,7 @@ final class _OfferCard extends StatelessWidget {
   final String city;
   final bool isFavorite;
   final VoidCallback onFavorite;
+  final double saving;
 
   String get price =>
       'R\$ ${offer.price.toStringAsFixed(2).replaceAll('.', ',')}';
@@ -293,7 +497,9 @@ final class _OfferCard extends StatelessWidget {
                 ),
                 Text(offer.distance),
                 IconButton(
-                  tooltip: isFavorite ? 'Remover dos favoritos' : 'Favoritar',
+                  tooltip: isFavorite
+                      ? 'Remover dos favoritos'
+                      : 'Favoritar farmácia',
                   onPressed: onFavorite,
                   icon: Icon(
                     isFavorite
@@ -335,6 +541,18 @@ final class _OfferCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (saving > 0.009) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Melhor preço: economize até R\$ ' +
+                    saving.toStringAsFixed(2).replaceAll('.', ',') +
+                    ' em relação à opção mais cara.',
+                style: const TextStyle(
+                  color: Color(0xFF0A966A),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
             const SizedBox(height: 12),
             Row(
               children: [
@@ -363,6 +581,7 @@ final class _OfferCard extends StatelessWidget {
                       price: price,
                       deliveryAvailable: offer.delivery,
                       prescriptionRequired: offer.prescriptionRequired,
+                      stockStatus: offer.status,
                     ),
                   ),
                 );
