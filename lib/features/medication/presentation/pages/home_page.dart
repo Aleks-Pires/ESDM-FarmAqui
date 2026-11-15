@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'results_page.dart';
 
@@ -13,6 +14,7 @@ final class HomePage extends StatefulWidget {
 final class _HomePageState extends State<HomePage> {
   final medicineController = TextEditingController();
   final cityController = TextEditingController(text: 'Arapiraca - AL');
+  bool locating = false;
 
   @override
   void dispose() {
@@ -21,15 +23,60 @@ final class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Future<void> useCurrentLocation() async {
+    if (locating) return;
+    setState(() => locating = true);
+
+    try {
+      var permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Permita o acesso à localização para usar este recurso.'),
+          ),
+        );
+        return;
+      }
+
+      final position = await Geolocator.getCurrentPosition();
+      cityController.text =
+          'Localização atual (${position.latitude.toStringAsFixed(3)}, '
+          '${position.longitude.toStringAsFixed(3)})';
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Localização obtida com sucesso.')),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Não foi possível obter a localização agora.'),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => locating = false);
+    }
+  }
+
   void search([String? preset]) {
     final medicine = (preset ?? medicineController.text).trim();
     final city = cityController.text.trim();
+
     if (medicine.isEmpty || city.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Informe o medicamento e a cidade.')),
       );
       return;
     }
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ResultsPage(medicine: medicine, city: city),
@@ -40,6 +87,7 @@ final class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     const green = Color(0xFF0A966A);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7FAF8),
       appBar: AppBar(
@@ -90,12 +138,23 @@ final class _HomePageState extends State<HomePage> {
             controller: cityController,
             onSubmitted: (_) => search(),
             decoration: const InputDecoration(
-              labelText: 'Cidade',
+              labelText: 'Cidade ou localização',
               prefixIcon: Icon(Icons.location_on_outlined),
               border: OutlineInputBorder(),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: locating ? null : useCurrentLocation,
+            icon: locating
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.my_location_rounded),
+            label: Text(locating ? 'Obtendo localização...' : 'Usar minha localização'),
+          ),
+          const SizedBox(height: 12),
           FilledButton.icon(
             style: FilledButton.styleFrom(
               backgroundColor: green,
@@ -133,7 +192,8 @@ final class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(18),
             ),
             child: const Text(
-              'Quando disponível, você poderá reservar o medicamento para retirada ou solicitar entrega.',
+              'Os resultados desta versão são demonstrativos. Quando disponível, '
+              'você pode simular reserva, retirada, entrega e pagamento.',
             ),
           ),
         ],
