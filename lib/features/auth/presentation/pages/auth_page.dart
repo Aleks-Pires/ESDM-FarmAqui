@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../profile/presentation/pages/registration_page.dart';
+import '../../data/clients/auth_api_client.dart';
 import '../../domain/contracts/auth_strategy.dart';
 import '../controllers/auth_controller.dart';
 import '../widgets/authenticated_view.dart';
@@ -17,12 +18,14 @@ final class AuthPage extends StatefulWidget {
     required this.controller,
     required this.emailStrategyFactory,
     required this.googleStrategyFactory,
+    required this.authApi,
     super.key,
   });
 
   final AuthController controller;
   final EmailStrategyFactory emailStrategyFactory;
   final GoogleStrategyFactory googleStrategyFactory;
+  final AuthApiClient authApi;
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -68,9 +71,23 @@ final class _AuthPageState extends State<AuthPage> {
     await widget.controller.loginWith(widget.googleStrategyFactory());
   }
 
-  void _openRegistration() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const RegistrationPage()),
+  Future<void> _openRegistration() async {
+    final credentials = await Navigator.of(context).push<RegisteredCredentials>(
+      MaterialPageRoute(
+        builder: (_) => RegistrationPage(authApi: widget.authApi),
+      ),
+    );
+
+    if (credentials == null) return;
+
+    _emailController.text = credentials.email;
+    _passwordController.text = credentials.password;
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Conta criada. Agora é só entrar com os dados cadastrados.'),
+      ),
     );
   }
 
