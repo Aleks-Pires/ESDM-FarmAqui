@@ -8,6 +8,7 @@ final class HistoryEntry {
     required this.status,
     required this.dateLabel,
     required this.totalLabel,
+    required this.orderNumber,
   });
 
   final String medicine;
@@ -16,6 +17,7 @@ final class HistoryEntry {
   final String status;
   final String dateLabel;
   final String totalLabel;
+  final String orderNumber;
 }
 
 final class DemoAppState extends ChangeNotifier {
