@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../auth/data/clients/auth_api_client.dart';
 
@@ -133,8 +134,14 @@ final class _RegistrationPageState extends State<RegistrationPage> {
               label: 'CPF',
               hint: '000.000.000-00',
               icon: Icons.badge_outlined,
-              validator: requiredField,
+              validator: (value) {
+                final error = requiredField(value);
+                if (error != null) return error;
+                if (!_isValidCpf(value ?? '')) return 'Informe um CPF válido.';
+                return null;
+              },
               keyboardType: TextInputType.number,
+              inputFormatters: const [_CpfInputFormatter()],
             ),
             _Field(
               controller: susController,
@@ -151,10 +158,128 @@ final class _RegistrationPageState extends State<RegistrationPage> {
               validator: (value) {
                 final error = requiredField(value);
                 if (error != null) return error;
-                if (!(value ?? '').contains('@')) return 'Informe um e-mail válido.';
+
+                final email = value ?? '';
+                if (email.contains(RegExp(r'\s'))) {
+                  return 'O e-mail não pode conter espaços.';
+                }
+
+                final emailRegex = RegExp(
+                  r'^[A-Za-z0-9.!#$%&\'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+
+            _Field(
+              controller: passwordController,
+              label: 'Senha',
+              icon: Icons.lock_outline_rounded,
+              validator: (value) {
+                final error = requiredField(value);
+                if (error != null) return error;
+                if ((value ?? '').length < 4) {
+                  return 'Use pelo menos 4 caracteres.';
+                }
+                return null;
+              },
+              obscureText: true,
+            ),
+            _Field(
+              controller: confirmController,
+              label: 'Confirmar senha',
+              icon: Icons.lock_outline_rounded,
+              validator: requiredField,
+              obscureText: true,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Forma de pagamento preferida',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 4),
+            ...['Cartão de crédito', 'Cartão de débito'].map(
+              (method) => RadioListTile<String>(
+                contentPadding: EdgeInsets.zero,
+                value: method,
+                groupValue: payment,
+                onChanged: loading
+                    ? null
+                    : (value) => setState(() => payment = value ?? payment),
+                title: Text(method),
+                secondary: const Icon(Icons.credit_card_rounded),
+              ),
+            ),
+            const SizedBox(height: 12),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: green,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              onPressed: loading ? null : finish,
+              child: loading
+                  ? const SizedBox.square(
+                      dimension: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Criar conta'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+final class _Field extends StatelessWidget {
+  const _Field({
+    required this.controller,
+    required this.label,
+    required this.icon,
+    required this.validator,
+    this.hint,
+    this.keyboardType,
+    this.obscureText = false,
+    this.inputFormatters,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final String? hint;
+  final IconData icon;
+  final String? Function(String?) validator;
+  final TextInputType? keyboardType;
+  final bool obscureText;
+  final List<TextInputFormatter>? inputFormatters;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        inputFormatters: inputFormatters,
+        validator: validator,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint,
+          prefixIcon: Icon(icon),
+          border: const OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+}
+,
+                );
+
+                if (!emailRegex.hasMatch(email)) {
+                  return 'Informe um e-mail válido.';
+                }
+
                 return null;
               },
               keyboardType: TextInputType.emailAddress,
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'\s')),
+              ],
             ),
             _Field(
               controller: passwordController,
@@ -251,6 +376,64 @@ final class _Field extends StatelessWidget {
           border: const OutlineInputBorder(),
         ),
       ),
+    );
+  }
+}
+
+
+bool _isValidCpf(String value) {
+  final digits = value.replaceAll(RegExp(r'\D'), '');
+
+  if (digits.length != 11) return false;
+  if (RegExp(r'^(\d)\1{10}$').hasMatch(digits)) return false;
+
+  int calculateDigit(String base, int initialWeight) {
+    var sum = 0;
+    var weight = initialWeight;
+
+    for (final codeUnit in base.codeUnits) {
+      sum += (codeUnit - 48) * weight;
+      weight--;
+    }
+
+    final remainder = sum % 11;
+    return remainder < 2 ? 0 : 11 - remainder;
+  }
+
+  final firstDigit = calculateDigit(digits.substring(0, 9), 10);
+  final secondDigit = calculateDigit(digits.substring(0, 9) + firstDigit.toString(), 11);
+
+  return digits.endsWith('$firstDigit$secondDigit');
+}
+
+final class _CpfInputFormatter extends TextInputFormatter {
+  const _CpfInputFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+
+    if (digits.isEmpty) {
+      return const TextEditingValue();
+    }
+
+    final limited = digits.length > 11 ? digits.substring(0, 11) : digits;
+    final buffer = StringBuffer();
+
+    for (var i = 0; i < limited.length; i++) {
+      if (i == 3 || i == 6) buffer.write('.');
+      if (i == 9) buffer.write('-');
+      buffer.write(limited[i]);
+    }
+
+    final text = buffer.toString();
+
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }
