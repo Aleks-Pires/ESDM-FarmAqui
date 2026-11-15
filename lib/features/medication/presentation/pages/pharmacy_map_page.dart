@@ -66,6 +66,7 @@ final class _PharmacyMapPageState extends State<PharmacyMapPage> {
           price: price,
           deliveryAvailable: offer.delivery,
           prescriptionRequired: offer.prescriptionRequired,
+          stockStatus: offer.status,
         ),
       ),
     );
