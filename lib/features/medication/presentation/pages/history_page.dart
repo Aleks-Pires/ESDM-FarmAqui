@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/demo_app_state.dart';
+import 'order_details_page.dart';
 
 final class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -45,7 +46,18 @@ final class HistoryPage extends StatelessWidget {
                 (item) => Card(
                   elevation: 0,
                   margin: const EdgeInsets.only(bottom: 12),
-                  child: Padding(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => OrderDetailsPage(
+                            orderNumber: item.orderNumber,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,6 +135,7 @@ final class HistoryPage extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
                   ),
                 ),
               ),
