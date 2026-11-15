@@ -83,7 +83,16 @@ final class _RegistrationPageState extends State<RegistrationPage> {
       backgroundColor: const Color(0xFFF7FAF8),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Criar conta', style: TextStyle(fontWeight: FontWeight.w800)),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          tooltip: 'Voltar',
+          onPressed: loading ? null : () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_rounded),
+        ),
+        title: const Text(
+          'Criar conta',
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
       ),
       body: Form(
         key: formKey,
