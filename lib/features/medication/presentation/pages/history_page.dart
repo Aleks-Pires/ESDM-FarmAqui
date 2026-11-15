@@ -13,7 +13,7 @@ final class HistoryPage extends StatelessWidget {
     return AnimatedBuilder(
       animation: DemoAppState.instance,
       builder: (context, _) {
-        final items = DemoAppState.instance.history;
+        final items = DemoAppState.instance.completedHistory;
 
         return ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
@@ -28,7 +28,7 @@ final class HistoryPage extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             const Text(
-              'Acompanhe suas reservas, retiradas e pedidos anteriores.',
+              'Veja pedidos concluídos ou cancelados.',
             ),
             const SizedBox(height: 22),
             if (items.isEmpty)
