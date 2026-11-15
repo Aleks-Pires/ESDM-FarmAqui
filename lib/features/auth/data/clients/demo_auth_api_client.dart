@@ -46,7 +46,7 @@ final class DemoAuthApiClient implements AuthApiClient {
     await Future<void>.delayed(const Duration(milliseconds: 550));
 
     final normalizedEmail = email.trim().toLowerCase();
-    if (normalizedEmail.isEmpty || password.length < 6) {
+    if (normalizedEmail.isEmpty || password.length < 4) {
       throw const AuthException('Dados de cadastro inválidos.');
     }
 
