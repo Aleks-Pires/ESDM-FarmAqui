@@ -54,8 +54,10 @@ final class _ReservationPageState extends State<ReservationPage> {
   String generateOrderNumber() {
     final now = DateTime.now();
     String two(int value) => value.toString().padLeft(2, '0');
-    final suffix = (now.millisecond % 10000).toString().padLeft(4, '0');
-    return 'FA-${now.year}${two(now.month)}${two(now.day)}-$suffix';
+    final time =
+        '${two(now.hour)}${two(now.minute)}${two(now.second)}';
+    final millis = now.millisecond.toString().padLeft(3, '0');
+    return 'FA-${now.year}${two(now.month)}${two(now.day)}-$time$millis';
   }
 
   Future<void> confirm() async {
