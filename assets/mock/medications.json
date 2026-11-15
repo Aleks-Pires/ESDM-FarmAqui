@@ -1,0 +1,94 @@
+{
+  "medications": [
+    {
+      "name": "Losartana 50 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 18.90,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria São Lucas",
+          "distance": "2,4 km",
+          "price": 19.50,
+          "status": "Últimas unidades",
+          "detail": "Entrega disponível",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Popular Vida",
+          "distance": "3,1 km",
+          "price": 17.80,
+          "status": "Em estoque",
+          "detail": "Receita exigida",
+          "pickup": true,
+          "delivery": false,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Dipirona 500 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 8.90,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria São Lucas",
+          "distance": "2,4 km",
+          "price": 9.50,
+          "status": "Em estoque",
+          "detail": "Entrega disponível",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Amoxicilina 500 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Popular Vida",
+          "distance": "3,1 km",
+          "price": 24.80,
+          "status": "Em estoque",
+          "detail": "Receita exigida",
+          "pickup": true,
+          "delivery": false,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Insulina",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 42.00,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": false,
+          "prescriptionRequired": true
+        }
+      ]
+    }
+  ]
+}
