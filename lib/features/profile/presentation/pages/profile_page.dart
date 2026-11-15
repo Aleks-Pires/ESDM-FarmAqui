@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 final class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -64,8 +67,41 @@ final class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> editAddress() async {
-    String? state;
+    const states = <String, String>{
+      'AC': 'Acre',
+      'AL': 'Alagoas',
+      'AP': 'Amapá',
+      'AM': 'Amazonas',
+      'BA': 'Bahia',
+      'CE': 'Ceará',
+      'DF': 'Distrito Federal',
+      'ES': 'Espírito Santo',
+      'GO': 'Goiás',
+      'MA': 'Maranhão',
+      'MT': 'Mato Grosso',
+      'MS': 'Mato Grosso do Sul',
+      'MG': 'Minas Gerais',
+      'PA': 'Pará',
+      'PB': 'Paraíba',
+      'PR': 'Paraná',
+      'PE': 'Pernambuco',
+      'PI': 'Piauí',
+      'RJ': 'Rio de Janeiro',
+      'RN': 'Rio Grande do Norte',
+      'RS': 'Rio Grande do Sul',
+      'RO': 'Rondônia',
+      'RR': 'Roraima',
+      'SC': 'Santa Catarina',
+      'SP': 'São Paulo',
+      'SE': 'Sergipe',
+      'TO': 'Tocantins',
+    };
+
+    String? stateCode;
     String? city;
+    var cities = <String>[];
+    var loadingCities = false;
+    String? citiesError;
 
     final neighborhoodController = TextEditingController();
     final streetController = TextEditingController();
@@ -88,44 +124,112 @@ final class _ProfilePageState extends State<ProfilePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
-                      value: state,
+                      value: stateCode,
+                      isExpanded: true,
                       decoration: const InputDecoration(
                         labelText: 'Estado',
                         hintText: 'Selecione o estado',
                         border: OutlineInputBorder(),
                       ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'Alagoas',
-                          child: Text('Alagoas'),
-                        ),
-                      ],
+                      items: states.entries
+                          .map(
+                            (entry) => DropdownMenuItem<String>(
+                              value: entry.key,
+                              child: Text('${entry.value} (${entry.key})'),
+                            ),
+                          )
+                          .toList(),
                       validator: (value) =>
                           value == null ? 'Selecione o estado.' : null,
-                      onChanged: (value) {
-                        setDialogState(() => state = value);
+                      onChanged: (value) async {
+                        if (value == null) return;
+
+                        setDialogState(() {
+                          stateCode = value;
+                          city = null;
+                          cities = [];
+                          citiesError = null;
+                          loadingCities = true;
+                        });
+
+                        try {
+                          final uri = Uri.parse(
+                            'https://servicodados.ibge.gov.br/api/v1/localidades/estados/$value/municipios?orderBy=nome',
+                          );
+                          final response = await http.get(uri);
+
+                          if (response.statusCode != 200) {
+                            throw Exception('Falha ao carregar municípios');
+                          }
+
+                          final decoded = jsonDecode(response.body) as List<dynamic>;
+                          final loadedCities = decoded
+                              .map(
+                                (item) =>
+                                    (item as Map<String, dynamic>)['nome'] as String,
+                              )
+                              .toList();
+
+                          if (!context.mounted) return;
+
+                          setDialogState(() {
+                            cities = loadedCities;
+                            loadingCities = false;
+                          });
+                        } catch (_) {
+                          if (!context.mounted) return;
+
+                          setDialogState(() {
+                            citiesError =
+                                'Não foi possível carregar os municípios. Tente novamente.';
+                            loadingCities = false;
+                          });
+                        }
                       },
                     ),
                     const SizedBox(height: 12),
-                    DropdownButtonFormField<String>(
-                      value: city,
-                      decoration: const InputDecoration(
-                        labelText: 'Cidade',
-                        hintText: 'Selecione a cidade',
-                        border: OutlineInputBorder(),
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'Arapiraca',
-                          child: Text('Arapiraca'),
+                    if (loadingCities)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          children: [
+                            SizedBox.square(
+                              dimension: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            SizedBox(width: 12),
+                            Text('Carregando municípios...'),
+                          ],
                         ),
-                      ],
-                      validator: (value) =>
-                          value == null ? 'Selecione a cidade.' : null,
-                      onChanged: (value) {
-                        setDialogState(() => city = value);
-                      },
-                    ),
+                      )
+                    else
+                      DropdownButtonFormField<String>(
+                        value: city,
+                        isExpanded: true,
+                        decoration: InputDecoration(
+                          labelText: 'Cidade',
+                          hintText: stateCode == null
+                              ? 'Selecione primeiro o estado'
+                              : 'Selecione a cidade',
+                          border: const OutlineInputBorder(),
+                          errorText: citiesError,
+                        ),
+                        items: cities
+                            .map(
+                              (name) => DropdownMenuItem<String>(
+                                value: name,
+                                child: Text(name),
+                              ),
+                            )
+                            .toList(),
+                        validator: (value) =>
+                            value == null ? 'Selecione a cidade.' : null,
+                        onChanged: stateCode == null || cities.isEmpty
+                            ? null
+                            : (value) {
+                                setDialogState(() => city = value);
+                              },
+                      ),
                     const SizedBox(height: 12),
                     TextFormField(
                       controller: neighborhoodController,
@@ -209,6 +313,7 @@ final class _ProfilePageState extends State<ProfilePage> {
             FilledButton(
               onPressed: () {
                 if (!(formKey.currentState?.validate() ?? false)) return;
+                if (stateCode == null || city == null) return;
 
                 final parts = <String>[
                   streetController.text.trim(),
@@ -225,7 +330,7 @@ final class _ProfilePageState extends State<ProfilePage> {
 
                 parts.add(neighborhoodController.text.trim());
                 parts.add(city!);
-                parts.add(state!);
+                parts.add(states[stateCode]!);
 
                 Navigator.pop(context, parts.join(', '));
               },
