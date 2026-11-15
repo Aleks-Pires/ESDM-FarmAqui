@@ -22,7 +22,7 @@ final class PharmacyMapPage extends StatefulWidget {
 }
 
 final class _PharmacyMapPageState extends State<PharmacyMapPage> {
-  static const _ufalArapiraca = LatLng(-9.7525, -36.6611);
+  static const _ufalArapiraca = LatLng(-9.7012582, -36.6873613);
 
   final MapController mapController = MapController();
 
