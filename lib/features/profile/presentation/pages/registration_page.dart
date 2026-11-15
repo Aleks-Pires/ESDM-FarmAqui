@@ -274,18 +274,33 @@ final class _CpfInputFormatter extends TextInputFormatter {
   const _CpfInputFormatter();
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    final digits = newValue.text.replaceAll(RegExp(r'\\D'), '');
-    final limited = digits.length > 11 ? digits.substring(0, 11) : digits;
-    final buffer = StringBuffer();
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    var digits = newValue.text.replaceAll(RegExp('[^0-9]'), '');
 
-    for (var i = 0; i < limited.length; i++) {
-      if (i == 3 || i == 6) buffer.write('.');
-      if (i == 9) buffer.write('-');
-      buffer.write(limited[i]);
+    if (digits.length > 11) {
+      digits = digits.substring(0, 11);
     }
 
-    final text = buffer.toString();
-    return TextEditingValue(text: text, selection: TextSelection.collapsed(offset: text.length));
+    final buffer = StringBuffer();
+
+    for (var i = 0; i < digits.length; i++) {
+      if (i == 3 || i == 6) {
+        buffer.write('.');
+      } else if (i == 9) {
+        buffer.write('-');
+      }
+
+      buffer.write(digits[i]);
+    }
+
+    final formatted = buffer.toString();
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
   }
 }
