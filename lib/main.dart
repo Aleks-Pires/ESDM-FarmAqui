@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'app/farma_aqui_app.dart';
+import 'core/demo_app_state.dart';
 import 'features/auth/data/clients/demo_auth_api_client.dart';
 import 'features/auth/data/clients/demo_google_auth_client.dart';
 import 'features/auth/data/clients/flutter_secure_storage_client.dart';
 import 'features/auth/data/token/secure_token_manager.dart';
 import 'features/auth/presentation/controllers/auth_controller.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DemoAppState.instance.initialize();
 
   final storageClient = FlutterSecureStorageClient(
     const FlutterSecureStorage(),
