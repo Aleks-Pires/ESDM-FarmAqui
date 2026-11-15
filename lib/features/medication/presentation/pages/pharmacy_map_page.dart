@@ -22,11 +22,11 @@ final class PharmacyMapPage extends StatefulWidget {
 }
 
 final class _PharmacyMapPageState extends State<PharmacyMapPage> {
-  static const _ufalArapiraca = LatLng(-9.7012582, -36.6873613);
+  static const _centroArapiraca = LatLng(-9.7535, -36.6616);
 
   final MapController mapController = MapController();
 
-  LatLng center = _ufalArapiraca;
+  LatLng center = _centroArapiraca;
   MedicationOffer? selectedOffer;
 
   List<LatLng> get pharmacyPoints {
@@ -83,9 +83,9 @@ final class _PharmacyMapPageState extends State<PharmacyMapPage> {
         width: 54,
         height: 54,
         child: const Tooltip(
-          message: 'UFAL - Campus Arapiraca',
+          message: 'Centro de Arapiraca',
           child: Icon(
-            Icons.school_rounded,
+            Icons.location_city_rounded,
             size: 46,
             color: Color(0xFF1565C0),
           ),
@@ -122,7 +122,7 @@ final class _PharmacyMapPageState extends State<PharmacyMapPage> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Centralizar na UFAL',
+            tooltip: 'Centralizar no Centro',
             onPressed: () => mapController.move(center, 14.5),
             icon: const Icon(Icons.my_location_rounded),
           ),
@@ -164,7 +164,7 @@ final class _PharmacyMapPageState extends State<PharmacyMapPage> {
                     Expanded(
                       child: Text(
                         '${widget.offers.length} farmácia(s) simulada(s) em Arapiraca, '
-                        'com referência no Campus UFAL Arapiraca.',
+                        'concentradas na região central da cidade.',
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
