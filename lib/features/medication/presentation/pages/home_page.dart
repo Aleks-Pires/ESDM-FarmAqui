@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../profile/presentation/pages/profile_page.dart';
+import 'history_page.dart';
 import 'results_page.dart';
 
 final class HomePage extends StatefulWidget {
@@ -15,6 +17,7 @@ final class _HomePageState extends State<HomePage> {
   final medicineController = TextEditingController();
   final cityController = TextEditingController(text: 'Arapiraca - AL');
   bool locating = false;
+  int selectedIndex = 0;
 
   @override
   void dispose() {
@@ -108,9 +111,12 @@ final class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+      body: IndexedStack(
+        index: selectedIndex,
         children: [
+          ListView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+            children: [
           const Text(
             'Encontre seu medicamento antes de se deslocar.',
             style: TextStyle(
@@ -196,11 +202,18 @@ final class _HomePageState extends State<HomePage> {
               'você pode simular reserva, retirada, entrega e pagamento.',
             ),
           ),
+            ],
+          ),
+          const HistoryPage(),
+          const ProfilePage(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: 0,
-        destinations: [
+        selectedIndex: selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() => selectedIndex = index);
+        },
+        destinations: const [
           NavigationDestination(icon: Icon(Icons.home_rounded), label: 'Início'),
           NavigationDestination(icon: Icon(Icons.history_rounded), label: 'Histórico'),
           NavigationDestination(icon: Icon(Icons.person_outline_rounded), label: 'Perfil'),
