@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../data/models/medication_offer.dart';
@@ -23,39 +22,12 @@ final class PharmacyMapPage extends StatefulWidget {
 }
 
 final class _PharmacyMapPageState extends State<PharmacyMapPage> {
-  static const _fallbackCenter = LatLng(-9.7525, -36.6611);
+  static const _ufalArapiraca = LatLng(-9.7525, -36.6611);
 
   final MapController mapController = MapController();
 
-  LatLng center = _fallbackCenter;
+  LatLng center = _ufalArapiraca;
   MedicationOffer? selectedOffer;
-  bool locating = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCenter();
-  }
-
-  Future<void> _loadCenter() async {
-    try {
-      var permission = await Geolocator.checkPermission();
-
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
-
-      if (permission != LocationPermission.denied &&
-          permission != LocationPermission.deniedForever) {
-        final position = await Geolocator.getCurrentPosition();
-        center = LatLng(position.latitude, position.longitude);
-      }
-    } catch (_) {
-      center = _fallbackCenter;
-    } finally {
-      if (mounted) setState(() => locating = false);
-    }
-  }
 
   List<LatLng> get pharmacyPoints {
     const offsets = [
@@ -103,12 +75,6 @@ final class _PharmacyMapPageState extends State<PharmacyMapPage> {
   Widget build(BuildContext context) {
     const green = Color(0xFF0A966A);
 
-    if (locating) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     final points = pharmacyPoints;
 
     final markers = <Marker>[
@@ -117,9 +83,9 @@ final class _PharmacyMapPageState extends State<PharmacyMapPage> {
         width: 54,
         height: 54,
         child: const Tooltip(
-          message: 'Sua localização',
+          message: 'UFAL - Campus Arapiraca',
           child: Icon(
-            Icons.person_pin_circle_rounded,
+            Icons.school_rounded,
             size: 46,
             color: Color(0xFF1565C0),
           ),
@@ -156,7 +122,7 @@ final class _PharmacyMapPageState extends State<PharmacyMapPage> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Centralizar',
+            tooltip: 'Centralizar na UFAL',
             onPressed: () => mapController.move(center, 14.5),
             icon: const Icon(Icons.my_location_rounded),
           ),
@@ -197,8 +163,8 @@ final class _PharmacyMapPageState extends State<PharmacyMapPage> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        '${widget.offers.length} farmácia(s) simulada(s) '
-                        'posicionada(s) perto de você.',
+                        '${widget.offers.length} farmácia(s) simulada(s) em Arapiraca, '
+                        'com referência no Campus UFAL Arapiraca.',
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
