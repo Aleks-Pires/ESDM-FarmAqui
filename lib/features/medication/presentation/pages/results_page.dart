@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/demo_app_state.dart';
+
 import '../../data/models/medication_offer.dart';
 import '../../data/services/medication_service.dart';
 import 'pharmacy_map_page.dart';
@@ -22,6 +24,7 @@ final class ResultsPage extends StatefulWidget {
 final class _ResultsPageState extends State<ResultsPage> {
   final service = MedicationService();
   late Future<MedicationSearchResult> futureResult;
+  String sortMode = 'price';
 
   @override
   void initState() {
@@ -71,8 +74,33 @@ final class _ResultsPageState extends State<ResultsPage> {
           }
 
           final result = snapshot.data!;
+          final offers = [...result.offers];
 
-          return ListView(
+          double distanceValue(MedicationOffer offer) {
+            final normalized = offer.distance
+                .toLowerCase()
+                .replaceAll('km', '')
+                .replaceAll(',', '.')
+                .trim();
+            return double.tryParse(normalized) ?? 9999;
+          }
+
+          offers.sort((a, b) {
+            if (sortMode == 'distance') {
+              return distanceValue(a).compareTo(distanceValue(b));
+            }
+            if (sortMode == 'favorites') {
+              final af = DemoAppState.instance.isFavorite(a.pharmacy) ? 0 : 1;
+              final bf = DemoAppState.instance.isFavorite(b.pharmacy) ? 0 : 1;
+              final favCompare = af.compareTo(bf);
+              if (favCompare != 0) return favCompare;
+            }
+            return a.price.compareTo(b.price);
+          });
+
+          return AnimatedBuilder(
+            animation: DemoAppState.instance,
+            builder: (context, _) => ListView(
             padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
             children: [
               Card(
@@ -96,7 +124,29 @@ final class _ResultsPageState extends State<ResultsPage> {
               const SizedBox(height: 12),
               _SourceBadge(source: result.source),
               const SizedBox(height: 18),
-              if (result.offers.isNotEmpty) ...[
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ChoiceChip(
+                    label: const Text('Menor preço'),
+                    selected: sortMode == 'price',
+                    onSelected: (_) => setState(() => sortMode = 'price'),
+                  ),
+                  ChoiceChip(
+                    label: const Text('Mais perto'),
+                    selected: sortMode == 'distance',
+                    onSelected: (_) => setState(() => sortMode = 'distance'),
+                  ),
+                  ChoiceChip(
+                    label: const Text('Favoritos primeiro'),
+                    selected: sortMode == 'favorites',
+                    onSelected: (_) => setState(() => sortMode = 'favorites'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              if (offers.isNotEmpty) ...[
                 OutlinedButton.icon(
                   onPressed: () {
                     Navigator.of(context).push(
@@ -104,7 +154,7 @@ final class _ResultsPageState extends State<ResultsPage> {
                         builder: (_) => PharmacyMapPage(
                           medicine: result.medicine,
                           city: result.city,
-                          offers: result.offers,
+                          offers: offers,
                         ),
                       ),
                     );
@@ -115,9 +165,9 @@ final class _ResultsPageState extends State<ResultsPage> {
                 const SizedBox(height: 14),
               ],
               Text(
-                result.offers.isEmpty
+                offers.isEmpty
                     ? 'Nenhuma farmácia encontrada'
-                    : '${result.offers.length} farmácia(s) encontrada(s)',
+                    : '${offers.length} farmácia(s) encontrada(s)',
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 16,
@@ -137,15 +187,20 @@ final class _ResultsPageState extends State<ResultsPage> {
                   ),
                 )
               else
-                ...result.offers.map(
+                ...offers.map(
                   (offer) => _OfferCard(
                     offer: offer,
                     medicine: result.medicine,
                     city: result.city,
+                    isFavorite:
+                        DemoAppState.instance.isFavorite(offer.pharmacy),
+                    onFavorite: () =>
+                        DemoAppState.instance.toggleFavorite(offer.pharmacy),
                   ),
                 ),
             ],
-          );
+          ),
+        );
         },
       ),
     );
@@ -190,11 +245,15 @@ final class _OfferCard extends StatelessWidget {
     required this.offer,
     required this.medicine,
     required this.city,
+    required this.isFavorite,
+    required this.onFavorite,
   });
 
   final MedicationOffer offer;
   final String medicine;
   final String city;
+  final bool isFavorite;
+  final VoidCallback onFavorite;
 
   String get price =>
       'R\$ ${offer.price.toStringAsFixed(2).replaceAll('.', ',')}';
@@ -233,6 +292,16 @@ final class _OfferCard extends StatelessWidget {
                   ),
                 ),
                 Text(offer.distance),
+                IconButton(
+                  tooltip: isFavorite ? 'Remover dos favoritos' : 'Favoritar',
+                  onPressed: onFavorite,
+                  icon: Icon(
+                    isFavorite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
+                    color: isFavorite ? Colors.redAccent : null,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 14),
