@@ -251,7 +251,7 @@ final class _Field extends StatelessWidget {
 }
 
 bool _isValidCpf(String value) {
-  final digits = value.replaceAll(RegExp(r'\\D'), '');
+  final digits = value.replaceAll(RegExp(r'\D'), '');
   if (digits.length != 11) return false;
   if (digits.split('').every((d) => d == digits[0])) return false;
 
