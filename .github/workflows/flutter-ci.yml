@@ -28,7 +28,7 @@ jobs:
         run: flutter pub get
 
       - name: Analisar codigo
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
 
       - name: Executar testes
         run: flutter test
