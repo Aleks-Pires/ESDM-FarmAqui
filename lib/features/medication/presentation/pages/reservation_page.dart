@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/demo_app_state.dart';
+
 import '../../data/services/medication_service.dart';
 import 'delivery_address_page.dart';
 
@@ -82,6 +84,21 @@ final class _ReservationPageState extends State<ReservationPage> {
       );
 
       if (!mounted || !success) return;
+
+      final subtotal = unitPrice * quantity;
+      final deliveryFee = delivery ? 6.90 : 0.0;
+      final total = subtotal + deliveryFee;
+
+      DemoAppState.instance.addHistory(
+        HistoryEntry(
+          medicine: widget.medicine,
+          pharmacy: widget.pharmacy,
+          mode: delivery ? 'Delivery' : 'Retirada',
+          status: delivery ? 'Pedido confirmado' : 'Reserva confirmada',
+          dateLabel: 'Agora',
+          totalLabel: brl(total),
+        ),
+      );
 
       await showDialog<void>(
         context: context,
