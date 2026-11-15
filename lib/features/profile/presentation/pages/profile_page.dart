@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -164,7 +163,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                       backgroundColor: const Color(0xFFEAF8F3),
                       backgroundImage: profileImageBytes == null
                           ? defaultProfileImage
-                          : MemoryImage(profileImageBytes!),
+                          : MemoryImage(profileImageBytes),
                     ),
                     Positioned(
                       right: -4,
