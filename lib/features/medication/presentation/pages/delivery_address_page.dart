@@ -114,7 +114,7 @@ final class _DeliveryAddressPageState extends State<DeliveryAddressPage> {
                 title: Text('Taxa de entrega'),
                 subtitle: Text('Valor fixo para a simulação em Arapiraca'),
                 trailing: Text(
-                  'R$ 6,90',
+                  'R\$ 6,90',
                   style: TextStyle(
                     fontWeight: FontWeight.w900,
                     color: Color(0xFF0A966A),
