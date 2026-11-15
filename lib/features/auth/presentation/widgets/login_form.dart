@@ -228,8 +228,8 @@ final class _PasswordField extends StatelessWidget {
       ),
       validator: (value) {
         if ((value ?? '').isEmpty) return 'Informe a senha.';
-        if ((value ?? '').length < 6) {
-          return 'A senha deve ter pelo menos 6 caracteres.';
+        if ((value ?? '').length < 4) {
+          return 'A senha deve ter pelo menos 4 caracteres.';
         }
         return null;
       },
