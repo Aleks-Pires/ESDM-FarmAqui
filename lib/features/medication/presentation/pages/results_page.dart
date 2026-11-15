@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../data/models/medication_offer.dart';
+import '../../data/services/medication_service.dart';
 import 'reservation_page.dart';
 
-final class ResultsPage extends StatelessWidget {
+final class ResultsPage extends StatefulWidget {
   const ResultsPage({
     required this.medicine,
     required this.city,
@@ -13,34 +15,33 @@ final class ResultsPage extends StatelessWidget {
   final String city;
 
   @override
-  Widget build(BuildContext context) {
-    const offers = [
-      _Offer(
-        pharmacy: 'Farmácia Central',
-        status: 'Em estoque',
-        distance: '1,2 km',
-        price: 'R\$ 18,90',
-        detail: 'Retirada hoje',
-        statusColor: Color(0xFF0A966A),
-      ),
-      _Offer(
-        pharmacy: 'Drogaria São Lucas',
-        status: 'Últimas unidades',
-        distance: '2,4 km',
-        price: 'R\$ 19,50',
-        detail: 'Entrega disponível',
-        statusColor: Color(0xFFE28A00),
-      ),
-      _Offer(
-        pharmacy: 'Farmácia Popular Vida',
-        status: 'Em estoque',
-        distance: '3,1 km',
-        price: 'R\$ 17,80',
-        detail: 'Receita exigida',
-        statusColor: Color(0xFF0A966A),
-      ),
-    ];
+  State<ResultsPage> createState() => _ResultsPageState();
+}
 
+final class _ResultsPageState extends State<ResultsPage> {
+  final service = MedicationService();
+  late Future<MedicationSearchResult> futureResult;
+
+  @override
+  void initState() {
+    super.initState();
+    futureResult = service.search(
+      medicine: widget.medicine,
+      city: widget.city,
+    );
+  }
+
+  void retry() {
+    setState(() {
+      futureResult = service.search(
+        medicine: widget.medicine,
+        city: widget.city,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7FAF8),
       appBar: AppBar(
@@ -49,39 +50,117 @@ final class ResultsPage extends StatelessWidget {
           'Resultados',
           style: TextStyle(fontWeight: FontWeight.w800),
         ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
-        children: [
-          Card(
-            elevation: 0,
-            color: const Color(0xFFEAF8F3),
-            child: ListTile(
-              leading: const CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(Icons.medication_rounded, color: Color(0xFF0A966A)),
-              ),
-              title: Text(
-                medicine,
-                style: const TextStyle(fontWeight: FontWeight.w800),
-              ),
-              subtitle: Text(city),
-            ),
-          ),
-          const SizedBox(height: 18),
-          const Text(
-            '3 farmácias encontradas',
-            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-          ),
-          const SizedBox(height: 10),
-          ...offers.map(
-            (offer) => _OfferCard(
-              offer: offer,
-              medicine: medicine,
-              city: city,
-            ),
+        actions: [
+          IconButton(
+            tooltip: 'Atualizar',
+            onPressed: retry,
+            icon: const Icon(Icons.refresh_rounded),
           ),
         ],
+      ),
+      body: FutureBuilder<MedicationSearchResult>(
+        future: futureResult,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError || !snapshot.hasData) {
+            return _ErrorState(onRetry: retry);
+          }
+
+          final result = snapshot.data!;
+
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 28),
+            children: [
+              Card(
+                elevation: 0,
+                color: const Color(0xFFEAF8F3),
+                child: ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.medication_rounded,
+                      color: Color(0xFF0A966A),
+                    ),
+                  ),
+                  title: Text(
+                    result.medicine,
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  subtitle: Text(result.city),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _SourceBadge(source: result.source),
+              const SizedBox(height: 18),
+              Text(
+                result.offers.isEmpty
+                    ? 'Nenhuma farmácia encontrada'
+                    : '${result.offers.length} farmácia(s) encontrada(s)',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (result.offers.isEmpty)
+                const Card(
+                  elevation: 0,
+                  child: Padding(
+                    padding: EdgeInsets.all(22),
+                    child: Text(
+                      'Não há ofertas simuladas para essa busca. '
+                      'Tente Losartana 50 mg, Dipirona 500 mg, '
+                      'Amoxicilina 500 mg ou Insulina.',
+                    ),
+                  ),
+                )
+              else
+                ...result.offers.map(
+                  (offer) => _OfferCard(
+                    offer: offer,
+                    medicine: result.medicine,
+                    city: result.city,
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+final class _SourceBadge extends StatelessWidget {
+  const _SourceBadge({required this.source});
+
+  final String source;
+
+  @override
+  Widget build(BuildContext context) {
+    final isApi = source == 'mock-api';
+
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isApi
+              ? const Color(0xFFE7F4FF)
+              : const Color(0xFFFFF4DC),
+          borderRadius: BorderRadius.circular(99),
+        ),
+        child: Text(
+          isApi
+              ? 'Dados recebidos da API simulada'
+              : 'Modo offline: JSON local',
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }
@@ -94,12 +173,19 @@ final class _OfferCard extends StatelessWidget {
     required this.city,
   });
 
-  final _Offer offer;
+  final MedicationOffer offer;
   final String medicine;
   final String city;
 
+  String get price =>
+      'R\$ ${offer.price.toStringAsFixed(2).replaceAll('.', ',')}';
+
   @override
   Widget build(BuildContext context) {
+    final statusColor = offer.status.toLowerCase().contains('últimas')
+        ? const Color(0xFFE28A00)
+        : const Color(0xFF0A966A);
+
     return Card(
       elevation: 0,
       margin: const EdgeInsets.only(bottom: 14),
@@ -112,13 +198,19 @@ final class _OfferCard extends StatelessWidget {
               children: [
                 const CircleAvatar(
                   backgroundColor: Color(0xFFEAF8F3),
-                  child: Icon(Icons.local_pharmacy_rounded, color: Color(0xFF0A966A)),
+                  child: Icon(
+                    Icons.local_pharmacy_rounded,
+                    color: Color(0xFF0A966A),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     offer.pharmacy,
-                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 17),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 17,
+                    ),
                   ),
                 ),
                 Text(offer.distance),
@@ -128,22 +220,25 @@ final class _OfferCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: offer.statusColor.withAlpha(24),
+                    color: statusColor.withAlpha(24),
                     borderRadius: BorderRadius.circular(99),
                   ),
                   child: Text(
                     offer.status,
                     style: TextStyle(
-                      color: offer.statusColor,
+                      color: statusColor,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
                 const Spacer(),
                 Text(
-                  offer.price,
+                  price,
                   style: const TextStyle(
                     color: Color(0xFF0A966A),
                     fontWeight: FontWeight.w900,
@@ -155,43 +250,38 @@ final class _OfferCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                const Icon(Icons.check_circle_outline_rounded, size: 19),
+                Icon(
+                  offer.prescriptionRequired
+                      ? Icons.receipt_long_outlined
+                      : Icons.check_circle_outline_rounded,
+                  size: 19,
+                ),
                 const SizedBox(width: 7),
-                Text(offer.detail),
+                Expanded(child: Text(offer.detail)),
               ],
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {},
-                    child: const Text('Ver detalhes'),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => ReservationPage(
-                            pharmacy: offer.pharmacy,
-                            medicine: medicine,
-                            city: city,
-                            price: offer.price,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      offer.detail.contains('Entrega')
-                          ? 'Solicitar entrega'
-                          : 'Reservar',
+            FilledButton(
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(46),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ReservationPage(
+                      pharmacy: offer.pharmacy,
+                      medicine: medicine,
+                      city: city,
+                      price: price,
+                      deliveryAvailable: offer.delivery,
+                      prescriptionRequired: offer.prescriptionRequired,
                     ),
                   ),
-                ),
-              ],
+                );
+              },
+              child: Text(
+                offer.delivery ? 'Reservar / Entrega' : 'Reservar',
+              ),
             ),
           ],
         ),
@@ -200,20 +290,34 @@ final class _OfferCard extends StatelessWidget {
   }
 }
 
-final class _Offer {
-  const _Offer({
-    required this.pharmacy,
-    required this.status,
-    required this.distance,
-    required this.price,
-    required this.detail,
-    required this.statusColor,
-  });
+final class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.onRetry});
 
-  final String pharmacy;
-  final String status;
-  final String distance;
-  final String price;
-  final String detail;
-  final Color statusColor;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.cloud_off_rounded, size: 48),
+            const SizedBox(height: 12),
+            const Text(
+              'Não foi possível carregar os resultados.',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Tentar novamente'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
