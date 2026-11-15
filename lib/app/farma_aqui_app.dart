@@ -56,6 +56,7 @@ final class FarmaAquiApp extends StatelessWidget {
         controller: controller,
         emailStrategyFactory: _emailFactory,
         googleStrategyFactory: _googleFactory,
+        authApi: api,
       ),
     );
   }
