@@ -13,6 +13,7 @@ final class ReservationPage extends StatefulWidget {
     required this.price,
     required this.deliveryAvailable,
     required this.prescriptionRequired,
+    this.stockStatus = 'Em estoque',
     super.key,
   });
 
@@ -22,6 +23,7 @@ final class ReservationPage extends StatefulWidget {
   final String price;
   final bool deliveryAvailable;
   final bool prescriptionRequired;
+  final String stockStatus;
 
   @override
   State<ReservationPage> createState() => _ReservationPageState();
@@ -36,6 +38,9 @@ final class _ReservationPageState extends State<ReservationPage> {
   bool confirming = false;
   String? deliveryAddress;
   String payment = 'Cartão de crédito';
+
+  int get maxStock =>
+      widget.stockStatus.toLowerCase().contains('últimas') ? 3 : 10;
 
   double get unitPrice {
     final normalized = widget.price
@@ -58,6 +63,58 @@ final class _ReservationPageState extends State<ReservationPage> {
         '${two(now.hour)}${two(now.minute)}${two(now.second)}';
     final millis = now.millisecond.toString().padLeft(3, '0');
     return 'FA-${now.year}${two(now.month)}${two(now.day)}-$time$millis';
+  }
+
+  Future<void> selectDeliveryAddress() async {
+    if (!widget.deliveryAvailable) return;
+
+    final savedAddress = DemoAppState.instance.profileAddress;
+
+    if (savedAddress != null && savedAddress.isNotEmpty) {
+      final choice = await showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Endereço de entrega'),
+          content: Text(
+            'Você possui um endereço cadastrado no Perfil:\n\n' +
+                savedAddress,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'other'),
+              child: const Text('Informar outro'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, 'saved'),
+              child: const Text('Usar cadastrado'),
+            ),
+          ],
+        ),
+      );
+
+      if (!mounted || choice == null) return;
+
+      if (choice == 'saved') {
+        setState(() {
+          delivery = true;
+          deliveryAddress = savedAddress;
+        });
+        return;
+      }
+    }
+
+    final address = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => const DeliveryAddressPage(),
+      ),
+    );
+
+    if (address == null || !mounted) return;
+
+    setState(() {
+      delivery = true;
+      deliveryAddress = address;
+    });
   }
 
   Future<void> confirm() async {
@@ -100,7 +157,7 @@ final class _ReservationPageState extends State<ReservationPage> {
 
       final orderNumber = generateOrderNumber();
 
-      DemoAppState.instance.addHistory(
+      await DemoAppState.instance.addHistory(
         HistoryEntry(
           medicine: widget.medicine,
           pharmacy: widget.pharmacy,
@@ -109,6 +166,9 @@ final class _ReservationPageState extends State<ReservationPage> {
           dateLabel: 'Agora',
           totalLabel: brl(total),
           orderNumber: orderNumber,
+          quantity: quantity,
+          address: delivery ? deliveryAddress : null,
+          payment: payment,
         ),
       );
 
@@ -230,10 +290,16 @@ final class _ReservationPageState extends State<ReservationPage> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () => setState(() => quantity++),
+                        onPressed: quantity < maxStock
+                            ? () => setState(() => quantity++)
+                            : null,
                         icon: const Icon(Icons.add_circle_outline_rounded),
                       ),
                     ],
+                  ),
+                  Text(
+                    'Máximo disponível nesta simulação: $maxStock unidade(s)',
+                    style: const TextStyle(fontSize: 12),
                   ),
                 ],
               ),
@@ -302,22 +368,7 @@ final class _ReservationPageState extends State<ReservationPage> {
                   subtitle: widget.deliveryAvailable
                       ? 'Previsão: 45 min'
                       : 'Indisponível',
-                  onTap: () async {
-                    if (!widget.deliveryAvailable) return;
-
-                    final address = await Navigator.of(context).push<String>(
-                      MaterialPageRoute(
-                        builder: (_) => const DeliveryAddressPage(),
-                      ),
-                    );
-
-                    if (address == null || !mounted) return;
-
-                    setState(() {
-                      delivery = true;
-                      deliveryAddress = address;
-                    });
-                  },
+                  onTap: selectDeliveryAddress,
                 ),
               ),
             ],
@@ -335,16 +386,7 @@ final class _ReservationPageState extends State<ReservationPage> {
                 ),
                 subtitle: Text(deliveryAddress!),
                 trailing: TextButton(
-                  onPressed: () async {
-                    final address = await Navigator.of(context).push<String>(
-                      MaterialPageRoute(
-                        builder: (_) => const DeliveryAddressPage(),
-                      ),
-                    );
-                    if (address != null && mounted) {
-                      setState(() => deliveryAddress = address);
-                    }
-                  },
+                  onPressed: selectDeliveryAddress,
                   child: const Text('Alterar'),
                 ),
               ),
