@@ -133,6 +133,20 @@ final class OrderDetailsPage extends StatelessWidget {
                   value: entry.address!,
                   icon: Icons.location_on_outlined,
                 ),
+              if (entry.isPickup)
+                _DetailTile(
+                  label: 'Responsável pela retirada',
+                  value: entry.authorizedPickupName ??
+                      'Titular da conta',
+                  icon: Icons.person_outline_rounded,
+                ),
+              if (entry.isPickup &&
+                  entry.authorizedPickupPhone != null)
+                _DetailTile(
+                  label: 'Telefone autorizado',
+                  value: entry.authorizedPickupPhone!,
+                  icon: Icons.phone_outlined,
+                ),
               const SizedBox(height: 18),
               const Text(
                 'Acompanhamento',
@@ -173,9 +187,34 @@ final class OrderDetailsPage extends StatelessWidget {
               if (!isFinished)
                 FilledButton.icon(
                   onPressed: () => _advance(entry),
-                  icon: const Icon(Icons.skip_next_rounded),
-                  label: const Text('Avançar status (simulação)'),
+                  icon: Icon(
+                    entry.isPickup
+                        ? Icons.local_pharmacy_outlined
+                        : Icons.skip_next_rounded,
+                  ),
+                  label: Text(
+                    entry.isPickup
+                        ? 'Simular confirmação da farmácia'
+                        : 'Avançar status (simulação)',
+                  ),
                 ),
+              if (entry.isPickup && !isFinished) ...[
+                const SizedBox(height: 8),
+                const Card(
+                  elevation: 0,
+                  color: Color(0xFFEAF8F3),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.info_outline_rounded,
+                      color: Color(0xFF0A966A),
+                    ),
+                    title: Text(
+                      'Na operação real, a farmácia confirma a retirada '
+                      'após conferir o responsável no balcão.',
+                    ),
+                  ),
+                ),
+              ],
               if (!isFinished) const SizedBox(height: 8),
               if (!isFinished)
                 OutlinedButton.icon(
