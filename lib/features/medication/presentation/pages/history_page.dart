@@ -99,6 +99,14 @@ final class HistoryPage extends StatelessWidget {
                         const SizedBox(height: 14),
                         const Divider(),
                         const SizedBox(height: 8),
+                        Text(
+                          'Pedido ' + item.orderNumber,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
                         Row(
                           children: [
                             Expanded(
