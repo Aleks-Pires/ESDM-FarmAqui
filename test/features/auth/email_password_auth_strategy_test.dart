@@ -56,6 +56,15 @@ final class _FakeAuthApiClient implements AuthApiClient {
   }
 
   @override
+  Future<void> register({
+    required String name,
+    required String email,
+    required String password,
+    required String cpf,
+    required String susCard,
+  }) async {}
+
+  @override
   Future<void> logout(String accessToken) async {
     logoutToken = accessToken;
   }
