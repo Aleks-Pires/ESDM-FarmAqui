@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../data/services/medication_service.dart';
+
 final class ReservationPage extends StatefulWidget {
   const ReservationPage({
     required this.pharmacy,
     required this.medicine,
     required this.city,
     required this.price,
+    required this.deliveryAvailable,
+    required this.prescriptionRequired,
     super.key,
   });
 
@@ -13,43 +17,21 @@ final class ReservationPage extends StatefulWidget {
   final String medicine;
   final String city;
   final String price;
+  final bool deliveryAvailable;
+  final bool prescriptionRequired;
 
   @override
   State<ReservationPage> createState() => _ReservationPageState();
 }
 
 final class _ReservationPageState extends State<ReservationPage> {
+  final service = MedicationService();
+
   int quantity = 1;
   bool delivery = false;
+  bool prescriptionAttached = false;
+  bool confirming = false;
   String payment = 'Cartão de crédito';
-
-  void confirm() {
-    showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        icon: const Icon(
-          Icons.check_circle_rounded,
-          color: Color(0xFF0A966A),
-          size: 48,
-        ),
-        title: const Text('Reserva confirmada'),
-        content: Text(
-          delivery
-              ? 'Pedido registrado. Previsão de entrega: aproximadamente 45 minutos.'
-              : 'Pedido registrado e disponível para retirada hoje.',
-        ),
-        actions: [
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
-            child: const Text('Concluir'),
-          ),
-        ],
-      ),
-    );
-  }
 
   double get unitPrice {
     final normalized = widget.price
@@ -57,11 +39,67 @@ final class _ReservationPageState extends State<ReservationPage> {
         .replaceAll('.', '')
         .replaceAll(',', '.')
         .trim();
+
     return double.tryParse(normalized) ?? 0;
   }
 
   String brl(double value) {
-    return 'R\$ ' + value.toStringAsFixed(2).replaceAll('.', ',');
+    return 'R\$ ${value.toStringAsFixed(2).replaceAll('.', ',')}';
+  }
+
+  Future<void> confirm() async {
+    if (widget.prescriptionRequired && !prescriptionAttached) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Este medicamento exige receita. Anexe a prescrição para continuar.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    setState(() => confirming = true);
+
+    try {
+      final success = await service.createReservation(
+        pharmacy: widget.pharmacy,
+        medicine: widget.medicine,
+        quantity: quantity,
+        delivery: delivery,
+        payment: payment,
+      );
+
+      if (!mounted || !success) return;
+
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          icon: const Icon(
+            Icons.check_circle_rounded,
+            color: Color(0xFF0A966A),
+            size: 48,
+          ),
+          title: Text(delivery ? 'Pedido confirmado' : 'Reserva confirmada'),
+          content: Text(
+            delivery
+                ? 'Pagamento simulado aprovado. Previsão de entrega: aproximadamente 45 minutos.'
+                : 'Pagamento simulado aprovado. Medicamento reservado para retirada hoje.',
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Concluir'),
+            ),
+          ],
+        ),
+      );
+
+      if (!mounted) return;
+      Navigator.popUntil(context, (route) => route.isFirst);
+    } finally {
+      if (mounted) setState(() => confirming = false);
+    }
   }
 
   @override
@@ -92,7 +130,10 @@ final class _ReservationPageState extends State<ReservationPage> {
                     contentPadding: EdgeInsets.zero,
                     leading: const CircleAvatar(
                       backgroundColor: Color(0xFFEAF8F3),
-                      child: Icon(Icons.local_pharmacy_rounded, color: Color(0xFF0A966A)),
+                      child: Icon(
+                        Icons.local_pharmacy_rounded,
+                        color: Color(0xFF0A966A),
+                      ),
                     ),
                     title: Text(
                       widget.pharmacy,
@@ -105,7 +146,10 @@ final class _ReservationPageState extends State<ReservationPage> {
                     contentPadding: EdgeInsets.zero,
                     leading: const CircleAvatar(
                       backgroundColor: Color(0xFFEAF8F3),
-                      child: Icon(Icons.medication_rounded, color: Color(0xFF0A966A)),
+                      child: Icon(
+                        Icons.medication_rounded,
+                        color: Color(0xFF0A966A),
+                      ),
                     ),
                     title: Text(
                       widget.medicine,
@@ -147,6 +191,42 @@ final class _ReservationPageState extends State<ReservationPage> {
               ),
             ),
           ),
+          if (widget.prescriptionRequired) ...[
+            const SizedBox(height: 18),
+            Card(
+              elevation: 0,
+              color: prescriptionAttached
+                  ? const Color(0xFFEAF8F3)
+                  : const Color(0xFFFFF4DC),
+              child: ListTile(
+                leading: Icon(
+                  prescriptionAttached
+                      ? Icons.verified_rounded
+                      : Icons.receipt_long_outlined,
+                  color: prescriptionAttached
+                      ? const Color(0xFF0A966A)
+                      : const Color(0xFFE28A00),
+                ),
+                title: Text(
+                  prescriptionAttached
+                      ? 'Receita anexada'
+                      : 'Receita obrigatória',
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
+                subtitle: const Text(
+                  'Simulação de envio e validação da prescrição.',
+                ),
+                trailing: TextButton(
+                  onPressed: () {
+                    setState(() => prescriptionAttached = true);
+                  },
+                  child: Text(
+                    prescriptionAttached ? 'Validada' : 'Anexar',
+                  ),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 18),
           const Text(
             'Como você quer receber?',
@@ -168,10 +248,17 @@ final class _ReservationPageState extends State<ReservationPage> {
               Expanded(
                 child: _ReceiveOption(
                   selected: delivery,
+                  enabled: widget.deliveryAvailable,
                   icon: Icons.local_shipping_outlined,
                   title: 'Entrega',
-                  subtitle: 'Previsão: 45 min',
-                  onTap: () => setState(() => delivery = true),
+                  subtitle: widget.deliveryAvailable
+                      ? 'Previsão: 45 min'
+                      : 'Indisponível',
+                  onTap: () {
+                    if (widget.deliveryAvailable) {
+                      setState(() => delivery = true);
+                    }
+                  },
                 ),
               ),
             ],
@@ -183,16 +270,21 @@ final class _ReservationPageState extends State<ReservationPage> {
           ),
           const SizedBox(height: 8),
           ...['Cartão de crédito', 'Cartão de débito', 'Pix'].map(
-            (method) => RadioListTile<String>(
-              value: method,
-              groupValue: payment,
-              onChanged: (value) => setState(() => payment = value ?? payment),
-              title: Text(method),
-              secondary: Icon(
+            (method) => ListTile(
+              leading: Icon(
                 method == 'Pix'
                     ? Icons.pix_rounded
                     : Icons.credit_card_rounded,
               ),
+              title: Text(method),
+              trailing: Radio<String>(
+                value: method,
+                groupValue: payment,
+                onChanged: (value) {
+                  if (value != null) setState(() => payment = value);
+                },
+              ),
+              onTap: () => setState(() => payment = method),
             ),
           ),
           const SizedBox(height: 12),
@@ -208,6 +300,10 @@ final class _ReservationPageState extends State<ReservationPage> {
                       label: 'Taxa de entrega',
                       value: brl(deliveryFee),
                     ),
+                  const _SummaryRow(
+                    label: 'Taxa de serviço',
+                    value: 'R\$ 0,00',
+                  ),
                   const Divider(),
                   _SummaryRow(
                     label: 'Total',
@@ -224,9 +320,26 @@ final class _ReservationPageState extends State<ReservationPage> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               backgroundColor: const Color(0xFF0A966A),
             ),
-            onPressed: confirm,
-            icon: const Icon(Icons.lock_outline_rounded),
-            label: Text(delivery ? 'Confirmar pedido' : 'Confirmar reserva'),
+            onPressed: confirming ? null : confirm,
+            icon: confirming
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.lock_outline_rounded),
+            label: Text(
+              confirming
+                  ? 'Processando...'
+                  : delivery
+                      ? 'Pagar e confirmar pedido'
+                      : 'Pagar e confirmar reserva',
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Pagamento e validação de receita são simulados para fins acadêmicos.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12),
           ),
         ],
       ),
@@ -241,6 +354,7 @@ final class _ReceiveOption extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.enabled = true,
   });
 
   final bool selected;
@@ -248,29 +362,39 @@ final class _ReceiveOption extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     const green = Color(0xFF0A966A);
-    return InkWell(
-      borderRadius: BorderRadius.circular(18),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: selected ? const Color(0xFFEAF8F3) : Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: selected ? green : Colors.black12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: green),
-            const SizedBox(height: 12),
-            Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
-            const SizedBox(height: 4),
-            Text(subtitle, style: const TextStyle(fontSize: 12.5)),
-          ],
+
+    return Opacity(
+      opacity: enabled ? 1 : 0.45,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: enabled ? onTap : null,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: selected ? const Color(0xFFEAF8F3) : Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: selected ? green : Colors.black12,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: green),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 4),
+              Text(subtitle, style: const TextStyle(fontSize: 12.5)),
+            ],
+          ),
         ),
       ),
     );
