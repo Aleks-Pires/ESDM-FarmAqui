@@ -291,7 +291,7 @@ final class _ReservationPageState extends State<ReservationPage> {
               elevation: 0,
               color: const Color(0xFFEAF8F3),
               child: ListTile(
-                leading: const Icon(Icons.home_pin_rounded),
+                leading: const Icon(Icons.location_on_rounded),
                 title: const Text(
                   'Endereço de entrega',
                   style: TextStyle(fontWeight: FontWeight.w800),
