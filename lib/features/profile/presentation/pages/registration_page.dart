@@ -4,18 +4,13 @@ import 'package:flutter/services.dart';
 import '../../../auth/data/clients/auth_api_client.dart';
 
 final class RegisteredCredentials {
-  const RegisteredCredentials({
-    required this.email,
-    required this.password,
-  });
-
+  const RegisteredCredentials({required this.email, required this.password});
   final String email;
   final String password;
 }
 
 final class RegistrationPage extends StatefulWidget {
   const RegistrationPage({required this.authApi, super.key});
-
   final AuthApiClient authApi;
 
   @override
@@ -53,15 +48,7 @@ final class _RegistrationPageState extends State<RegistrationPage> {
   Future<void> finish() async {
     if (!(formKey.currentState?.validate() ?? false)) return;
 
-    if (passwordController.text != confirmController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('As senhas não coincidem.')),
-      );
-      return;
-    }
-
     setState(() => loading = true);
-
     try {
       await widget.authApi.register(
         name: nameController.text,
@@ -96,10 +83,7 @@ final class _RegistrationPageState extends State<RegistrationPage> {
       backgroundColor: const Color(0xFFF7FAF8),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text(
-          'Criar conta',
-          style: TextStyle(fontWeight: FontWeight.w800),
-        ),
+        title: const Text('Criar conta', style: TextStyle(fontWeight: FontWeight.w800)),
       ),
       body: Form(
         key: formKey,
@@ -115,10 +99,7 @@ final class _RegistrationPageState extends State<RegistrationPage> {
                     child: Icon(Icons.person_rounded, size: 48, color: green),
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    'Adicionar foto',
-                    style: TextStyle(color: green, fontWeight: FontWeight.w700),
-                  ),
+                  Text('Adicionar foto', style: TextStyle(color: green, fontWeight: FontWeight.w700)),
                 ],
               ),
             ),
@@ -137,8 +118,7 @@ final class _RegistrationPageState extends State<RegistrationPage> {
               validator: (value) {
                 final error = requiredField(value);
                 if (error != null) return error;
-                if (!_isValidCpf(value ?? '')) return 'Informe um CPF válido.';
-                return null;
+                return _isValidCpf(value ?? '') ? null : 'Informe um CPF válido.';
               },
               keyboardType: TextInputType.number,
               inputFormatters: const [_CpfInputFormatter()],
@@ -158,14 +138,17 @@ final class _RegistrationPageState extends State<RegistrationPage> {
               validator: (value) {
                 final error = requiredField(value);
                 if (error != null) return error;
-
                 final email = value ?? '';
-                if (email.contains(RegExp(r'\s'))) {
-                  return 'O e-mail não pode conter espaços.';
-                }
-
-                final emailRegex = RegExp(
-                  r'^[A-Za-z0-9.!#$%&\'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+
+                if (email.contains(' ')) return 'O e-mail não pode conter espaços.';
+                final at = email.indexOf('@');
+                final lastAt = email.lastIndexOf('@');
+                final dot = email.lastIndexOf('.');
+                final valid = at > 0 && at == lastAt && dot > at + 1 && dot < email.length - 1;
+                return valid ? null : 'Informe um e-mail válido.';
+              },
+              keyboardType: TextInputType.emailAddress,
+              inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\\s'))],
+            ),
             _Field(
               controller: passwordController,
               label: 'Senha',
@@ -173,10 +156,7 @@ final class _RegistrationPageState extends State<RegistrationPage> {
               validator: (value) {
                 final error = requiredField(value);
                 if (error != null) return error;
-                if ((value ?? '').length < 4) {
-                  return 'Use pelo menos 4 caracteres.';
-                }
-                return null;
+                return (value ?? '').length >= 4 ? null : 'Use pelo menos 4 caracteres.';
               },
               obscureText: true,
             ),
@@ -184,39 +164,32 @@ final class _RegistrationPageState extends State<RegistrationPage> {
               controller: confirmController,
               label: 'Confirmar senha',
               icon: Icons.lock_outline_rounded,
-              validator: requiredField,
+              validator: (value) {
+                final error = requiredField(value);
+                if (error != null) return error;
+                return value == passwordController.text ? null : 'As senhas não coincidem.';
+              },
               obscureText: true,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Forma de pagamento preferida',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
-            ),
+            const Text('Forma de pagamento preferida', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
             const SizedBox(height: 4),
             ...['Cartão de crédito', 'Cartão de débito'].map(
               (method) => RadioListTile<String>(
                 contentPadding: EdgeInsets.zero,
                 value: method,
                 groupValue: payment,
-                onChanged: loading
-                    ? null
-                    : (value) => setState(() => payment = value ?? payment),
+                onChanged: loading ? null : (value) => setState(() => payment = value ?? payment),
                 title: Text(method),
                 secondary: const Icon(Icons.credit_card_rounded),
               ),
             ),
             const SizedBox(height: 12),
             FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: green,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
+              style: FilledButton.styleFrom(backgroundColor: green, padding: const EdgeInsets.symmetric(vertical: 16)),
               onPressed: loading ? null : finish,
               child: loading
-                  ? const SizedBox.square(
-                      dimension: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                  ? const SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
                   : const Text('Criar conta'),
             ),
           ],
@@ -267,159 +240,33 @@ final class _Field extends StatelessWidget {
     );
   }
 }
-,
-                );
-
-                if (!emailRegex.hasMatch(email)) {
-                  return 'Informe um e-mail válido.';
-                }
-
-                return null;
-              },
-              keyboardType: TextInputType.emailAddress,
-              inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'\s')),
-              ],
-            ),
-            _Field(
-              controller: passwordController,
-              label: 'Senha',
-              icon: Icons.lock_outline_rounded,
-              validator: (value) {
-                final error = requiredField(value);
-                if (error != null) return error;
-                if ((value ?? '').length < 6) {
-                  return 'Use pelo menos 6 caracteres.';
-                }
-                return null;
-              },
-              obscureText: true,
-            ),
-            _Field(
-              controller: confirmController,
-              label: 'Confirmar senha',
-              icon: Icons.lock_outline_rounded,
-              validator: requiredField,
-              obscureText: true,
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Forma de pagamento preferida',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 4),
-            ...['Cartão de crédito', 'Cartão de débito'].map(
-              (method) => RadioListTile<String>(
-                contentPadding: EdgeInsets.zero,
-                value: method,
-                groupValue: payment,
-                onChanged: loading
-                    ? null
-                    : (value) => setState(() => payment = value ?? payment),
-                title: Text(method),
-                secondary: const Icon(Icons.credit_card_rounded),
-              ),
-            ),
-            const SizedBox(height: 12),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: green,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              onPressed: loading ? null : finish,
-              child: loading
-                  ? const SizedBox.square(
-                      dimension: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Criar conta'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-final class _Field extends StatelessWidget {
-  const _Field({
-    required this.controller,
-    required this.label,
-    required this.icon,
-    required this.validator,
-    this.hint,
-    this.keyboardType,
-    this.obscureText = false,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final String? hint;
-  final IconData icon;
-  final String? Function(String?) validator;
-  final TextInputType? keyboardType;
-  final bool obscureText;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        validator: validator,
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          prefixIcon: Icon(icon),
-          border: const OutlineInputBorder(),
-        ),
-      ),
-    );
-  }
-}
-
 
 bool _isValidCpf(String value) {
-  final digits = value.replaceAll(RegExp(r'\D'), '');
-
+  final digits = value.replaceAll(RegExp(r'\\D'), '');
   if (digits.length != 11) return false;
-  if (RegExp(r'^(\d)\1{10}$').hasMatch(digits)) return false;
+  if (digits.split('').every((d) => d == digits[0])) return false;
 
-  int calculateDigit(String base, int initialWeight) {
+  int calc(String base, int weight) {
     var sum = 0;
-    var weight = initialWeight;
-
-    for (final codeUnit in base.codeUnits) {
-      sum += (codeUnit - 48) * weight;
+    for (final code in base.codeUnits) {
+      sum += (code - 48) * weight;
       weight--;
     }
-
     final remainder = sum % 11;
     return remainder < 2 ? 0 : 11 - remainder;
   }
 
-  final firstDigit = calculateDigit(digits.substring(0, 9), 10);
-  final secondDigit = calculateDigit(digits.substring(0, 9) + firstDigit.toString(), 11);
-
-  return digits.endsWith('$firstDigit$secondDigit');
+  final d1 = calc(digits.substring(0, 9), 10);
+  final d2 = calc(digits.substring(0, 9) + d1.toString(), 11);
+  return digits.endsWith(d1.toString() + d2.toString());
 }
 
 final class _CpfInputFormatter extends TextInputFormatter {
   const _CpfInputFormatter();
 
   @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
-
-    if (digits.isEmpty) {
-      return const TextEditingValue();
-    }
-
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    final digits = newValue.text.replaceAll(RegExp(r'\\D'), '');
     final limited = digits.length > 11 ? digits.substring(0, 11) : digits;
     final buffer = StringBuffer();
 
@@ -430,10 +277,6 @@ final class _CpfInputFormatter extends TextInputFormatter {
     }
 
     final text = buffer.toString();
-
-    return TextEditingValue(
-      text: text,
-      selection: TextSelection.collapsed(offset: text.length),
-    );
+    return TextEditingValue(text: text, selection: TextSelection.collapsed(offset: text.length));
   }
 }
