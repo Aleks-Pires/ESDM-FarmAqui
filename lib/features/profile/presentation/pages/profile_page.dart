@@ -11,11 +11,11 @@ final class _ProfilePageState extends State<ProfilePage> {
   String name = 'Usuário FarmaAqui';
   String email = 'usuario@farmaaqui.app';
   String phone = '(82) 99999-0000';
-  String address = 'Não informado';
+  String address = 'Nenhum endereço cadastrado';
 
   Future<void> editAddress() async {
-    String state = 'Alagoas';
-    String city = 'Arapiraca';
+    String? state;
+    String? city;
     final neighborhoodController = TextEditingController();
     final streetController = TextEditingController();
     final numberController = TextEditingController();
@@ -40,6 +40,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                       initialValue: state,
                       decoration: const InputDecoration(
                         labelText: 'Estado',
+                        hintText: 'Selecione o estado',
                         border: OutlineInputBorder(),
                       ),
                       items: const [
@@ -48,10 +49,9 @@ final class _ProfilePageState extends State<ProfilePage> {
                           child: Text('Alagoas'),
                         ),
                       ],
+                      validator: (value) => value == null ? 'Selecione o estado.' : null,
                       onChanged: (value) {
-                        if (value != null) {
-                          setDialogState(() => state = value);
-                        }
+                        setDialogState(() => state = value);
                       },
                     ),
                     const SizedBox(height: 12),
@@ -59,6 +59,7 @@ final class _ProfilePageState extends State<ProfilePage> {
                       initialValue: city,
                       decoration: const InputDecoration(
                         labelText: 'Cidade',
+                        hintText: 'Selecione a cidade',
                         border: OutlineInputBorder(),
                       ),
                       items: const [
@@ -67,10 +68,9 @@ final class _ProfilePageState extends State<ProfilePage> {
                           child: Text('Arapiraca'),
                         ),
                       ],
+                      validator: (value) => value == null ? 'Selecione a cidade.' : null,
                       onChanged: (value) {
-                        if (value != null) {
-                          setDialogState(() => city = value);
-                        }
+                        setDialogState(() => city = value);
                       },
                     ),
                     const SizedBox(height: 12),
@@ -170,7 +170,13 @@ final class _ProfilePageState extends State<ProfilePage> {
         _EditTile(icon: Icons.person_outline_rounded, title: 'Nome', value: name, onTap: () => editField(title: 'Nome', currentValue: name, onSave: (value) => name = value)),
         _EditTile(icon: Icons.mail_outline_rounded, title: 'E-mail', value: email, onTap: () => editField(title: 'E-mail', currentValue: email, keyboardType: TextInputType.emailAddress, onSave: (value) => email = value)),
         _EditTile(icon: Icons.phone_outlined, title: 'Telefone', value: phone, onTap: () => editField(title: 'Telefone', currentValue: phone, keyboardType: TextInputType.phone, onSave: (value) => phone = value)),
-        _EditTile(icon: Icons.home_outlined, title: 'Endereço', value: address, onTap: editAddress),
+        _EditTile(
+          icon: Icons.home_outlined,
+          title: 'Endereço',
+          value: address,
+          actionLabel: address == 'Nenhum endereço cadastrado' ? 'Adicionar' : 'Editar',
+          onTap: editAddress,
+        ),
         _EditTile(icon: Icons.lock_outline_rounded, title: 'Senha', value: 'Alterar senha', onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Alteração de senha simulada nesta versão acadêmica.')));
         }),
@@ -200,18 +206,28 @@ final class _StatCard extends StatelessWidget {
 }
 
 final class _EditTile extends StatelessWidget {
-  const _EditTile({required this.icon, required this.title, required this.value, required this.onTap});
+  const _EditTile({required this.icon, required this.title, required this.value, required this.onTap, this.actionLabel});
   final IconData icon;
   final String title;
   final String value;
   final VoidCallback onTap;
+  final String? actionLabel;
   @override
   Widget build(BuildContext context) {
     return Card(elevation: 0, margin: const EdgeInsets.only(bottom: 8), child: ListTile(
       leading: Icon(icon, color: const Color(0xFF0A966A)),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
       subtitle: Text(value),
-      trailing: const Icon(Icons.edit_outlined),
+      trailing: actionLabel == null
+          ? const Icon(Icons.edit_outlined)
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(actionLabel!),
+                const SizedBox(width: 4),
+                const Icon(Icons.chevron_right_rounded),
+              ],
+            ),
       onTap: onTap,
     ));
   }
@@ -267,8 +283,8 @@ final class _EditTile extends StatelessWidget {
                 }
 
                 parts.add(neighborhoodController.text.trim());
-                parts.add(city);
-                parts.add(state);
+                parts.add(city!);
+                parts.add(state!);
 
                 Navigator.pop(context, parts.join(', '));
               },
