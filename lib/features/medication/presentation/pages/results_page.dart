@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/models/medication_offer.dart';
 import '../../data/services/medication_service.dart';
+import 'pharmacy_map_page.dart';
 import 'reservation_page.dart';
 
 final class ResultsPage extends StatefulWidget {
@@ -95,6 +96,24 @@ final class _ResultsPageState extends State<ResultsPage> {
               const SizedBox(height: 12),
               _SourceBadge(source: result.source),
               const SizedBox(height: 18),
+              if (result.offers.isNotEmpty) ...[
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => PharmacyMapPage(
+                          medicine: result.medicine,
+                          city: result.city,
+                          offers: result.offers,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.map_outlined),
+                  label: const Text('Ver farmácias no mapa'),
+                ),
+                const SizedBox(height: 14),
+              ],
               Text(
                 result.offers.isEmpty
                     ? 'Nenhuma farmácia encontrada'
