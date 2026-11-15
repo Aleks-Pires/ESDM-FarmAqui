@@ -23,6 +23,7 @@ final class _RegistrationPageState extends State<RegistrationPage> {
   final cpfController = TextEditingController();
   final susController = TextEditingController();
   final emailController = TextEditingController();
+  final addressController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmController = TextEditingController();
 
@@ -35,6 +36,7 @@ final class _RegistrationPageState extends State<RegistrationPage> {
     cpfController.dispose();
     susController.dispose();
     emailController.dispose();
+    addressController.dispose();
     passwordController.dispose();
     confirmController.dispose();
     super.dispose();
@@ -157,6 +159,13 @@ final class _RegistrationPageState extends State<RegistrationPage> {
               },
               keyboardType: TextInputType.emailAddress,
               inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\\s'))],
+            ),
+            _Field(
+              controller: addressController,
+              label: 'Endereço (opcional)',
+              hint: 'Rua, número, bairro - Arapiraca/AL',
+              icon: Icons.home_outlined,
+              validator: (_) => null,
             ),
             _Field(
               controller: passwordController,
