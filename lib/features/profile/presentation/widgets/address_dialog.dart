@@ -41,18 +41,50 @@ final class _AddressDialogState extends State<AddressDialog> {
     'TO': 'Tocantins',
   };
 
-  final formKey = GlobalKey<FormState>();
   final neighborhoodController = TextEditingController();
   final streetController = TextEditingController();
   final numberController = TextEditingController();
   final blockController = TextEditingController();
   final complementController = TextEditingController();
 
+  final neighborhoodFocus = FocusNode();
+  final streetFocus = FocusNode();
+  final numberFocus = FocusNode();
+
   String? stateCode;
   String? city;
   List<String> cities = [];
   bool loadingCities = false;
   String? citiesError;
+
+  String? activeError;
+
+  @override
+  void initState() {
+    super.initState();
+
+    neighborhoodFocus.addListener(() {
+      if (!neighborhoodFocus.hasFocus &&
+          neighborhoodController.text.trim().isEmpty) {
+        setState(() => activeError = 'neighborhood');
+      }
+    });
+
+    streetFocus.addListener(() {
+      if (!streetFocus.hasFocus && streetController.text.trim().isEmpty) {
+        setState(() => activeError = 'street');
+      }
+    });
+
+    numberFocus.addListener(() {
+      if (!numberFocus.hasFocus) {
+        final value = numberController.text.trim().toUpperCase();
+        if (value.isEmpty || !RegExp(r'^[0-9A-Z]+$').hasMatch(value)) {
+          setState(() => activeError = 'number');
+        }
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -61,6 +93,9 @@ final class _AddressDialogState extends State<AddressDialog> {
     numberController.dispose();
     blockController.dispose();
     complementController.dispose();
+    neighborhoodFocus.dispose();
+    streetFocus.dispose();
+    numberFocus.dispose();
     super.dispose();
   }
 
@@ -71,6 +106,7 @@ final class _AddressDialogState extends State<AddressDialog> {
       cities = [];
       citiesError = null;
       loadingCities = true;
+      if (activeError == 'state') activeError = null;
     });
 
     try {
@@ -105,13 +141,64 @@ final class _AddressDialogState extends State<AddressDialog> {
     }
   }
 
+  void clearErrorWhenValid(String field) {
+    if (activeError != field) return;
+
+    var valid = false;
+
+    if (field == 'neighborhood') {
+      valid = neighborhoodController.text.trim().isNotEmpty;
+    } else if (field == 'street') {
+      valid = streetController.text.trim().isNotEmpty;
+    } else if (field == 'number') {
+      final value = numberController.text.trim().toUpperCase();
+      valid = value.isNotEmpty && RegExp(r'^[0-9A-Z]+$').hasMatch(value);
+    }
+
+    if (valid) {
+      setState(() => activeError = null);
+    }
+  }
+
   void save() {
-    if (!(formKey.currentState?.validate() ?? false)) return;
-    if (stateCode == null || city == null) return;
+    if (stateCode == null) {
+      setState(() => activeError = 'state');
+      return;
+    }
+
+    if (city == null) {
+      setState(() => activeError = 'city');
+      return;
+    }
+
+    if (neighborhoodController.text.trim().isEmpty) {
+      setState(() => activeError = 'neighborhood');
+      neighborhoodFocus.requestFocus();
+      return;
+    }
+
+    if (streetController.text.trim().isEmpty) {
+      setState(() => activeError = 'street');
+      streetFocus.requestFocus();
+      return;
+    }
+
+    final number = numberController.text.trim().toUpperCase();
+    if (number.isEmpty) {
+      setState(() => activeError = 'number');
+      numberFocus.requestFocus();
+      return;
+    }
+
+    if (!RegExp(r'^[0-9A-Z]+$').hasMatch(number)) {
+      setState(() => activeError = 'number');
+      numberFocus.requestFocus();
+      return;
+    }
 
     final parts = <String>[
       streetController.text.trim(),
-      numberController.text.trim().toUpperCase(),
+      number,
     ];
 
     if (blockController.text.trim().isNotEmpty) {
@@ -135,137 +222,143 @@ final class _AddressDialogState extends State<AddressDialog> {
       title: const Text('Endereço'),
       content: SizedBox(
         width: 520,
-        child: Form(
-          key: formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DropdownButtonFormField<String>(
-                  value: stateCode,
-                  isExpanded: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Estado',
-                    hintText: 'Selecione o estado',
-                    border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                value: stateCode,
+                isExpanded: true,
+                decoration: InputDecoration(
+                  labelText: 'Estado',
+                  hintText: 'Selecione o estado',
+                  border: const OutlineInputBorder(),
+                  errorText:
+                      activeError == 'state' ? 'Selecione o estado.' : null,
+                ),
+                items: states.entries
+                    .map(
+                      (entry) => DropdownMenuItem<String>(
+                        value: entry.key,
+                        child: Text('${entry.value} (${entry.key})'),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) loadCities(value);
+                },
+              ),
+              const SizedBox(height: 12),
+              if (loadingCities)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    children: [
+                      SizedBox.square(
+                        dimension: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      SizedBox(width: 12),
+                      Text('Carregando municípios...'),
+                    ],
                   ),
-                  items: states.entries
+                )
+              else
+                DropdownButtonFormField<String>(
+                  value: city,
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: 'Cidade',
+                    hintText: stateCode == null
+                        ? 'Selecione primeiro o estado'
+                        : 'Selecione a cidade',
+                    border: const OutlineInputBorder(),
+                    errorText: citiesError ??
+                        (activeError == 'city'
+                            ? 'Selecione a cidade.'
+                            : null),
+                  ),
+                  items: cities
                       .map(
-                        (entry) => DropdownMenuItem<String>(
-                          value: entry.key,
-                          child: Text('${entry.value} (${entry.key})'),
+                        (name) => DropdownMenuItem<String>(
+                          value: name,
+                          child: Text(name),
                         ),
                       )
                       .toList(),
-                  validator: (value) =>
-                      value == null ? 'Selecione o estado.' : null,
-                  onChanged: (value) {
-                    if (value != null) loadCities(value);
-                  },
+                  onChanged: stateCode == null || cities.isEmpty
+                      ? null
+                      : (value) {
+                          setState(() {
+                            city = value;
+                            if (activeError == 'city' && value != null) {
+                              activeError = null;
+                            }
+                          });
+                        },
                 ),
-                const SizedBox(height: 12),
-                if (loadingCities)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      children: [
-                        SizedBox.square(
-                          dimension: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        SizedBox(width: 12),
-                        Text('Carregando municípios...'),
-                      ],
-                    ),
-                  )
-                else
-                  DropdownButtonFormField<String>(
-                    value: city,
-                    isExpanded: true,
-                    decoration: InputDecoration(
-                      labelText: 'Cidade',
-                      hintText: stateCode == null
-                          ? 'Selecione primeiro o estado'
-                          : 'Selecione a cidade',
-                      border: const OutlineInputBorder(),
-                      errorText: citiesError,
-                    ),
-                    items: cities
-                        .map(
-                          (name) => DropdownMenuItem<String>(
-                            value: name,
-                            child: Text(name),
-                          ),
-                        )
-                        .toList(),
-                    validator: (value) =>
-                        value == null ? 'Selecione a cidade.' : null,
-                    onChanged: stateCode == null || cities.isEmpty
-                        ? null
-                        : (value) => setState(() => city = value),
-                  ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: neighborhoodController,
-                  decoration: const InputDecoration(
-                    labelText: 'Bairro',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) => (value ?? '').trim().isEmpty
+              const SizedBox(height: 12),
+              TextField(
+                controller: neighborhoodController,
+                focusNode: neighborhoodFocus,
+                onChanged: (_) => clearErrorWhenValid('neighborhood'),
+                decoration: InputDecoration(
+                  labelText: 'Bairro',
+                  border: const OutlineInputBorder(),
+                  errorText: activeError == 'neighborhood'
                       ? 'Informe o bairro.'
                       : null,
                 ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: streetController,
-                  decoration: const InputDecoration(
-                    labelText: 'Logradouro',
-                    hintText: 'Rua, avenida, travessa...',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) => (value ?? '').trim().isEmpty
-                      ? 'Informe o logradouro.'
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: streetController,
+                focusNode: streetFocus,
+                onChanged: (_) => clearErrorWhenValid('street'),
+                decoration: InputDecoration(
+                  labelText: 'Logradouro',
+                  hintText: 'Rua, avenida, travessa...',
+                  border: const OutlineInputBorder(),
+                  errorText:
+                      activeError == 'street' ? 'Informe o logradouro.' : null,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: numberController,
+                focusNode: numberFocus,
+                textCapitalization: TextCapitalization.characters,
+                onChanged: (_) => clearErrorWhenValid('number'),
+                decoration: InputDecoration(
+                  labelText: 'Número',
+                  hintText: 'Ex.: 20, 20A ou SN',
+                  helperText: 'Use SN para endereço sem número.',
+                  border: const OutlineInputBorder(),
+                  errorText: activeError == 'number'
+                      ? (numberController.text.trim().isEmpty
+                          ? 'Informe o número ou SN.'
+                          : 'Use apenas letras e números.')
                       : null,
                 ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: numberController,
-                  textCapitalization: TextCapitalization.characters,
-                  decoration: const InputDecoration(
-                    labelText: 'Número',
-                    hintText: 'Ex.: 20, 20A ou SN',
-                    helperText: 'Use SN para endereço sem número.',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    final text = (value ?? '').trim().toUpperCase();
-                    if (text.isEmpty) return 'Informe o número ou SN.';
-                    if (!RegExp(r'^[0-9A-Z]+$').hasMatch(text)) {
-                      return 'Use apenas letras e números.';
-                    }
-                    return null;
-                  },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: blockController,
+                decoration: const InputDecoration(
+                  labelText: 'Quadra (opcional)',
+                  border: OutlineInputBorder(),
                 ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: blockController,
-                  decoration: const InputDecoration(
-                    labelText: 'Quadra (opcional)',
-                    border: OutlineInputBorder(),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: complementController,
+                decoration: const InputDecoration(
+                  labelText: 'Complemento (opcional)',
+                  hintText: 'Apartamento, casa, referência...',
+                  border: OutlineInputBorder(),
                 ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: complementController,
-                  decoration: const InputDecoration(
-                    labelText: 'Complemento (opcional)',
-                    hintText: 'Apartamento, casa, referência...',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
