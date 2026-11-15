@@ -92,3 +92,58 @@ A Pull Request deve ter como destino a branch `main`.
 ## Validação automática
 
 O repositório inclui um workflow do GitHub Actions que, a cada push/PR, gera o scaffold Android, executa `flutter analyze`, roda os testes e tenta compilar um APK de debug. Isso ajuda a detectar problemas de integração assim que o projeto for publicado.
+
+
+## Demonstração funcional
+
+A branch `feat/telas-farmaaqui` contém o fluxo completo usado na apresentação:
+
+1. criar conta simulada;
+2. entrar com e-mail e senha;
+3. pesquisar medicamento;
+4. usar cidade digitada ou localização do dispositivo;
+5. receber ofertas pela API mock;
+6. selecionar farmácia;
+7. simular receita quando exigida;
+8. escolher retirada ou entrega;
+9. selecionar forma de pagamento;
+10. confirmar a reserva.
+
+### API simulada
+
+A API mock está em `mock_api/` e usa FastAPI.
+
+No Windows:
+
+```bash
+cd mock_api
+py -m pip install -r requirements.txt
+py -m uvicorn server:app --reload --host 0.0.0.0 --port 8000
+```
+
+Abra `http://127.0.0.1:8000/docs` para visualizar e testar as rotas.
+
+Em outro terminal, na raiz do projeto:
+
+```bash
+flutter pub get
+flutter run -d chrome
+```
+
+O aplicativo tenta consultar a API em `http://127.0.0.1:8000`. Se a API não estiver disponível, ele utiliza automaticamente `assets/mock/medications.json`, permitindo que a demonstração continue offline.
+
+### Buscas preparadas para a demonstração
+
+- Losartana 50 mg
+- Dipirona 500 mg
+- Amoxicilina 500 mg
+- Insulina
+
+### Conta de demonstração
+
+- E-mail: `aluno@farmaaqui.app`
+- Senha: `123456`
+
+Também é possível criar uma conta temporária pela própria interface e entrar com as credenciais cadastradas enquanto o aplicativo permanecer aberto.
+
+> Estoque, localização das farmácias, receita e pagamento são simulados para fins acadêmicos.
