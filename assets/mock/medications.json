@@ -6,7 +6,7 @@
         {
           "pharmacy": "Farmácia Central",
           "distance": "1,2 km",
-          "price": 18.90,
+          "price": 18.9,
           "status": "Em estoque",
           "detail": "Retirada hoje",
           "pickup": true,
@@ -16,7 +16,7 @@
         {
           "pharmacy": "Drogaria São Lucas",
           "distance": "2,4 km",
-          "price": 19.50,
+          "price": 19.5,
           "status": "Últimas unidades",
           "detail": "Entrega disponível",
           "pickup": true,
@@ -26,12 +26,12 @@
         {
           "pharmacy": "Farmácia Popular Vida",
           "distance": "3,1 km",
-          "price": 17.80,
+          "price": 17.8,
           "status": "Em estoque",
-          "detail": "Receita exigida",
+          "detail": "Retirada hoje",
           "pickup": true,
           "delivery": false,
-          "prescriptionRequired": true
+          "prescriptionRequired": false
         }
       ]
     },
@@ -41,7 +41,7 @@
         {
           "pharmacy": "Farmácia Central",
           "distance": "1,2 km",
-          "price": 8.90,
+          "price": 8.9,
           "status": "Em estoque",
           "detail": "Retirada hoje",
           "pickup": true,
@@ -51,7 +51,7 @@
         {
           "pharmacy": "Drogaria São Lucas",
           "distance": "2,4 km",
-          "price": 9.50,
+          "price": 9.5,
           "status": "Em estoque",
           "detail": "Entrega disponível",
           "pickup": true,
@@ -66,11 +66,21 @@
         {
           "pharmacy": "Farmácia Popular Vida",
           "distance": "3,1 km",
-          "price": 24.80,
+          "price": 24.8,
           "status": "Em estoque",
           "detail": "Receita exigida",
           "pickup": true,
           "delivery": false,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria São Lucas",
+          "distance": "2,4 km",
+          "price": 27.9,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida",
+          "pickup": true,
+          "delivery": true,
           "prescriptionRequired": true
         }
       ]
@@ -81,12 +91,202 @@
         {
           "pharmacy": "Farmácia Central",
           "distance": "1,2 km",
-          "price": 42.00,
+          "price": 42,
           "status": "Em estoque",
           "detail": "Retirada hoje",
           "pickup": true,
           "delivery": false,
           "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Paracetamol 750 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 10.9,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria São Lucas",
+          "distance": "2,4 km",
+          "price": 11.5,
+          "status": "Em estoque",
+          "detail": "Entrega disponível",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Ibuprofeno 400 mg",
+      "offers": [
+        {
+          "pharmacy": "Drogaria São Lucas",
+          "distance": "2,4 km",
+          "price": 15.9,
+          "status": "Em estoque",
+          "detail": "Entrega disponível",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Popular Vida",
+          "distance": "3,1 km",
+          "price": 14.8,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": false,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Omeprazol 20 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 13.5,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Metformina 850 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Popular Vida",
+          "distance": "3,1 km",
+          "price": 12.4,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": false,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 13.2,
+          "status": "Últimas unidades",
+          "detail": "Entrega disponível",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Sinvastatina 20 mg",
+      "offers": [
+        {
+          "pharmacy": "Drogaria São Lucas",
+          "distance": "2,4 km",
+          "price": 16.9,
+          "status": "Em estoque",
+          "detail": "Entrega disponível",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Atenolol 50 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 9.8,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Loratadina 10 mg",
+      "offers": [
+        {
+          "pharmacy": "Drogaria São Lucas",
+          "distance": "2,4 km",
+          "price": 12.9,
+          "status": "Em estoque",
+          "detail": "Entrega disponível",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Popular Vida",
+          "distance": "3,1 km",
+          "price": 11.7,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": false,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Azitromicina 500 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 29.9,
+          "status": "Em estoque",
+          "detail": "Receita exigida",
+          "pickup": true,
+          "delivery": false,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Cetirizina 10 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Popular Vida",
+          "distance": "3,1 km",
+          "price": 10.5,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": false,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Hidroclorotiazida 25 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Central",
+          "distance": "1,2 km",
+          "price": 7.9,
+          "status": "Em estoque",
+          "detail": "Retirada hoje",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
         }
       ]
     }
