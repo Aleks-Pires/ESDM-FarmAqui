@@ -1,6 +1,41 @@
 {
   "medications": [
     {
+      "name": "Losartana 25 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 14.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 16.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 14.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
       "name": "Losartana 50 mg",
       "offers": [
         {
@@ -16,7 +51,7 @@
         {
           "pharmacy": "Drogaria Bom Sucesso",
           "distance": "2,4 km",
-          "price": 19.5,
+          "price": 20.5,
           "status": "Últimas unidades",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
@@ -26,7 +61,42 @@
         {
           "pharmacy": "Farmácia Avenida",
           "distance": "3,1 km",
-          "price": 17.8,
+          "price": 18.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Losartana 100 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 24.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 26.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 24.1,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
@@ -51,7 +121,17 @@
         {
           "pharmacy": "Drogaria Bom Sucesso",
           "distance": "2,4 km",
-          "price": 9.5,
+          "price": 10.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 8.1,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
@@ -61,42 +141,72 @@
       ]
     },
     {
-      "name": "Amoxicilina 500 mg",
-      "offers": [
-        {
-          "pharmacy": "Farmácia Agreste",
-          "distance": "3,1 km",
-          "price": 24.8,
-          "status": "Em estoque",
-          "detail": "Receita exigida • Delivery disponível em Arapiraca",
-          "pickup": true,
-          "delivery": true,
-          "prescriptionRequired": true
-        },
-        {
-          "pharmacy": "Drogaria Bom Sucesso",
-          "distance": "2,4 km",
-          "price": 27.9,
-          "status": "Últimas unidades",
-          "detail": "Receita exigida • Delivery disponível em Arapiraca",
-          "pickup": true,
-          "delivery": true,
-          "prescriptionRequired": true
-        }
-      ]
-    },
-    {
-      "name": "Insulina",
+      "name": "Dipirona 1 g",
       "offers": [
         {
           "pharmacy": "Farmácia Agreste",
           "distance": "1,2 km",
-          "price": 42,
+          "price": 12.9,
           "status": "Em estoque",
-          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
           "delivery": true,
-          "prescriptionRequired": true
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 14.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 12.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Paracetamol 500 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 8.5,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 10.1,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 7.7,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
         }
       ]
     },
@@ -116,7 +226,52 @@
         {
           "pharmacy": "Drogaria Bom Sucesso",
           "distance": "2,4 km",
-          "price": 11.5,
+          "price": 12.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 10.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Ibuprofeno 200 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 10.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 12.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 10.1,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
@@ -130,7 +285,7 @@
       "offers": [
         {
           "pharmacy": "Farmácia Agreste",
-          "distance": "2,4 km",
+          "distance": "1,2 km",
           "price": 15.9,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
@@ -140,8 +295,53 @@
         },
         {
           "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 17.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
           "distance": "3,1 km",
-          "price": 14.8,
+          "price": 15.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Ibuprofeno 600 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 18.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 20.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 18.1,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
@@ -162,6 +362,166 @@
           "pickup": true,
           "delivery": true,
           "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 15.1,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 12.7,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Omeprazol 40 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 19.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 21.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 19.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Pantoprazol 20 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 18.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 20.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 18.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Pantoprazol 40 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 24.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 26.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 24.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Metformina 500 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 9.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 11.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 9.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
         }
       ]
     },
@@ -170,7 +530,7 @@
       "offers": [
         {
           "pharmacy": "Farmácia Agreste",
-          "distance": "3,1 km",
+          "distance": "1,2 km",
           "price": 12.4,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
@@ -180,9 +540,19 @@
         },
         {
           "pharmacy": "Drogaria Bom Sucesso",
-          "distance": "1,2 km",
-          "price": 13.2,
+          "distance": "2,4 km",
+          "price": 14,
           "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 11.6,
+          "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
           "delivery": true,
@@ -195,8 +565,98 @@
       "offers": [
         {
           "pharmacy": "Farmácia Agreste",
-          "distance": "2,4 km",
+          "distance": "1,2 km",
           "price": 16.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 18.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 16.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Sinvastatina 40 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 22.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 24.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 22.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Atenolol 25 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 7.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 9.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 7.1,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
@@ -217,16 +677,36 @@
           "pickup": true,
           "delivery": true,
           "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 11.4,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
         }
       ]
     },
     {
-      "name": "Loratadina 10 mg",
+      "name": "Atenolol 100 mg",
       "offers": [
         {
           "pharmacy": "Farmácia Agreste",
-          "distance": "2,4 km",
-          "price": 12.9,
+          "distance": "1,2 km",
+          "price": 13.9,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
@@ -235,38 +715,18 @@
         },
         {
           "pharmacy": "Drogaria Bom Sucesso",
-          "distance": "3,1 km",
-          "price": 11.7,
-          "status": "Em estoque",
+          "distance": "2,4 km",
+          "price": 15.5,
+          "status": "Últimas unidades",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
           "delivery": true,
           "prescriptionRequired": false
-        }
-      ]
-    },
-    {
-      "name": "Azitromicina 500 mg",
-      "offers": [
+        },
         {
-          "pharmacy": "Farmácia Agreste",
-          "distance": "1,2 km",
-          "price": 29.9,
-          "status": "Em estoque",
-          "detail": "Receita exigida • Delivery disponível em Arapiraca",
-          "pickup": true,
-          "delivery": true,
-          "prescriptionRequired": true
-        }
-      ]
-    },
-    {
-      "name": "Cetirizina 10 mg",
-      "offers": [
-        {
-          "pharmacy": "Farmácia Agreste",
+          "pharmacy": "Farmácia Avenida",
           "distance": "3,1 km",
-          "price": 10.5,
+          "price": 13.1,
           "status": "Em estoque",
           "detail": "Delivery disponível em Arapiraca",
           "pickup": true,
@@ -287,6 +747,726 @@
           "pickup": true,
           "delivery": true,
           "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 9.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 7.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Hidroclorotiazida 50 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 10.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 12.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 10.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Loratadina 10 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 12.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 14.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 12.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Cetirizina 10 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 10.5,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 12.1,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 9.7,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Amlodipino 5 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 11.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 13.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 11.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Amlodipino 10 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 15.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 17.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 15.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Enalapril 5 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 8.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 10.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 8.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Enalapril 10 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 10.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 12.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 10.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Enalapril 20 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 13.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 15.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 13.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Captopril 25 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 8.5,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 10.1,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 7.7,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Captopril 50 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 11.9,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 13.5,
+          "status": "Últimas unidades",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 11.1,
+          "status": "Em estoque",
+          "detail": "Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Amoxicilina 500 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 24.8,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 26.4,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 24,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Amoxicilina 875 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 34.9,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 36.5,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 34.1,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Azitromicina 500 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 29.9,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 31.5,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 29.1,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Prednisona 5 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 10.9,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 12.5,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 10.1,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Prednisona 20 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 17.9,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 19.5,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 17.1,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Sertralina 50 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 24.9,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 26.5,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 24.1,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Sertralina 100 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 34.9,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 36.5,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 34.1,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Fluoxetina 20 mg",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 22.9,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 24.5,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 22.1,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Insulina NPH",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 42,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 43.6,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 41.2,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        }
+      ]
+    },
+    {
+      "name": "Insulina Regular",
+      "offers": [
+        {
+          "pharmacy": "Farmácia Agreste",
+          "distance": "1,2 km",
+          "price": 45,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Drogaria Bom Sucesso",
+          "distance": "2,4 km",
+          "price": 46.6,
+          "status": "Últimas unidades",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
+        },
+        {
+          "pharmacy": "Farmácia Avenida",
+          "distance": "3,1 km",
+          "price": 44.2,
+          "status": "Em estoque",
+          "detail": "Receita exigida • Delivery disponível em Arapiraca",
+          "pickup": true,
+          "delivery": true,
+          "prescriptionRequired": true
         }
       ]
     }
