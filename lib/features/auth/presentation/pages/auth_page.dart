@@ -68,6 +68,66 @@ final class _AuthPageState extends State<AuthPage> {
   Future<void> _loginWithGoogle() async {
     FocusScope.of(context).unfocus();
     widget.controller.clearError();
+
+    final selected = await showModalBottomSheet<bool>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Escolha uma conta',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Continuar para o FarmaAqui com uma conta Google simulada.',
+                ),
+                const SizedBox(height: 18),
+                _GoogleAccountTile(
+                  name: 'Conta de demonstração',
+                  email: 'usuario.demo@gmail.com',
+                  initials: 'UD',
+                  onTap: () => Navigator.pop(context, true),
+                ),
+                const Divider(),
+                _GoogleAccountTile(
+                  name: 'Usuário FarmaAqui',
+                  email: 'farmaaqui.teste@gmail.com',
+                  initials: 'FA',
+                  onTap: () => Navigator.pop(context, true),
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.person_add_alt_1_rounded),
+                  ),
+                  title: const Text('Usar outra conta'),
+                  subtitle: const Text('Simulação acadêmica'),
+                  onTap: () => Navigator.pop(context, true),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancelar'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selected != true) return;
+
     await widget.controller.loginWith(widget.googleStrategyFactory());
   }
 
@@ -114,6 +174,45 @@ final class _AuthPageState extends State<AuthPage> {
           onCreateAccount: _openRegistration,
         );
       },
+    );
+  }
+}
+
+
+final class _GoogleAccountTile extends StatelessWidget {
+  const _GoogleAccountTile({
+    required this.name,
+    required this.email,
+    required this.initials,
+    required this.onTap,
+  });
+
+  final String name;
+  final String email;
+  final String initials;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundColor: const Color(0xFFE8F0FE),
+        child: Text(
+          initials,
+          style: const TextStyle(
+            color: Color(0xFF1967D2),
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ),
+      title: Text(
+        name,
+        style: const TextStyle(fontWeight: FontWeight.w700),
+      ),
+      subtitle: Text(email),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: onTap,
     );
   }
 }
